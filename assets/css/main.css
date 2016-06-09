@@ -1,0 +1,126 @@
+html, body {
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica, Arial, sans-serif ;
+    font-style: normal;
+    font-weight: normal;
+}
+
+.breaker {
+    background: #454545 none repeat scroll 0 0;
+    border-top: 1px solid #585858;
+    height: 3px;
+    border-bottom: 1px solid #353535;
+}
+
+.main {
+    top: 65px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    position: absolute;
+    background: #dbdbdb;
+}
+
+.main .container {
+
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 61px;
+    bottom: 0px;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+}
+
+.main .content {
+    background: #dbdbdb;
+    height: 100%;
+    width: 100%;
+}
+
+.splitter.vertical {
+    height: 10px;
+    cursor: row-resize;
+}
+
+.splitter.vertical.grabber {
+    height: 100%;
+    background: #a1a1a1;
+    width: 70px;
+    margin: 0 auto;
+}
+
+.splitter.horizontal {
+    width: 10px;
+    height: 100%;
+    cursor: col-resize;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    float: left;
+    min-height: 88px;
+}
+
+.splitter.horizontal.grabber {
+    flex: 0 1 70px;
+    background: #a1a1a1;
+    width: 100%;
+}
+
+.subnav {
+    width: 60px;
+    height: 100%;
+    float: left;
+    background: #454545;
+    border-right: 1px solid #343434;
+}
+
+.subnav ul {
+    text-align: left;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.subnav ul li {
+
+    height: 60px;
+    background: #4b4b4b;
+    border-top: 1px solid #676767;
+    border-left: 1px solid #575757;
+    line-height: 55px;
+    font-size: 17pt;
+    box-sizing: border-box;
+
+    border-right: 1px solid #404040;
+    border-bottom: 1px solid #3b3b3b;
+
+    text-align: center;
+    color: #c5c5c5;
+
+}
+
+.button {
+    cursor:pointer;
+}
+
+.subnav ul li:hover {
+    background: #565656;
+}
+
+.subnav .resizer {
+    height: 10px;
+    background: #353535;
+    border: 0px;
+    border-right: 1px solid #2f2f2f;
+    background-image: url("./assets/images/subnav_arrow_back.png");
+    background-repeat: no-repeat;
+    background-position: 94% 37%;
+}
+
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+}
