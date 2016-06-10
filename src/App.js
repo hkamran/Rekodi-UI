@@ -2,25 +2,24 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {Subnav} from './components/Subnav';
-import {Content} from './components/Content';
+import {Header} from './components/Header';
+import {Dashboard} from './pages/dashboard/Dashboard';
 
 class App extends React.Component {
 
 
     render() {
-        var style = {
-            height: '60px'
-        };
-
         return (
             <div className="grow height width">
-                <div className="header" style={style}>
-
-                </div>
+                <Header />
                 <div className="breaker"></div>
                 <div className="main">
                     <Subnav />
-                    <Content />
+                    <div className="container">
+                        <div className="content ">
+                            <Dashboard />
+                        </div>
+                    </div>
                 </div>
             </div>
         )
