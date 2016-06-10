@@ -1,18 +1,26 @@
 
 import React from 'react';
 import {render} from 'react-dom';
-
+import {Subnav} from './components/Subnav';
+import {Content} from './components/Content';
 
 class App extends React.Component {
+
+
     render() {
+        var style = {
+            height: '60px'
+        };
+
         return (
-            <div>
-                <div class="header">
+            <div className="grow height width">
+                <div className="header" style={style}>
 
                 </div>
-                <div class="breaker"></div>
-                <div class="main">
-                        lol
+                <div className="breaker"></div>
+                <div className="main">
+                    <Subnav />
+                    <Content />
                 </div>
             </div>
         )

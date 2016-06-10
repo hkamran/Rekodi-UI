@@ -108,6 +108,13 @@
     min-height: inherit;
 }
 
+.properties .wrapper {
+    height: 100%;
+    width: 100%;
+    white-space: normal;
+    padding: 10px;
+    box-sizing: border-box;
+}
 
 .properties ul {
     text-align: left;
