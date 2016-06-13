@@ -6,7 +6,8 @@ import restful, { fetchBackend } from 'restful.js';
 import {Message} from '../models/Message';
 import {Request} from '../models/Request';
 import {Response} from '../models/Response';
-
+import {Settings} from '../models/Settings';
+import {Tape} from '../models/Tape';
 import {Event} from '../models/Event';
 
 
@@ -15,6 +16,28 @@ export class Service {
     constructor(url) {
         this.url = url;
         this.api = restful(url, fetchBackend(fetch));
+    }
+
+    getTape(callback) {
+        const tapeCollection = this.api.custom ('tape');
+        tapeCollection.get().then((tapeEntities) => {
+            const tapeEntity = tapeEntities.body();
+            const tapeData = tapeEntity.data();
+
+            var tape = Parser.parseTape(tapeData);
+            callback(tape);
+        });
+    }
+
+    getSettings(callback) {
+        const settingsCollection = this.api.custom ('settings');
+        settingsCollection.get().then((response) => {
+            const settingsEntity = response.body();
+            const settingsData = settingsEntity.data();
+
+            var settings = Parser.parseSettings(settingsData);
+            callback(settings);
+        });
     }
 
     getEvents(callback) {
@@ -59,6 +82,39 @@ export class Service {
 }
 
 class Parser {
+
+    static parseTape(obj) {
+        var keys = Object.getOwnPropertyNames(obj);
+
+        var tape = new Tape();
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+
+            var dataObj = obj[key];
+            var request = Parser.parseRequest(dataObj.request, "RECORD");
+            var responses = dataObj.responses;
+
+            tape.addRequest(request);
+            for (var x = 0; x < responses.length; x++) {
+                var responseData = dataObj.responses[x];
+                var response = Parser.parseResponse(responseData, "RECORD");
+                tape.addResponse(request.id, response);
+            }
+        }
+
+        return tape;
+    }
+
+    static parseSettings(obj) {
+        var port = obj["port"];
+        var host = obj["host"];
+        var state = obj["proxy"];
+        var redirect = obj["state"];
+
+        //port, host, state, redirect
+        var settings = new Settings(port, host, state, redirect);
+        return settings;
+    }
 
     static parseRequest(obj, state) {
         var method = obj["Method"];

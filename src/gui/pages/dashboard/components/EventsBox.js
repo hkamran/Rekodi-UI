@@ -39,7 +39,7 @@ export class EventBox extends React.Component {
                                     <th style={{width: "50%"}}>Description</th>
                                     <th style={{width: "1%", minWidth: "120px"}}>Request</th>
                                     <th style={{width: "1%", minWidth: "120px"}}>Response</th>
-                                    <th style={{width: "1%", minWidth: "77px", borderRight: "0px"}}>Duration</th>
+                                    <th style={{width: "1%", minWidth: "117px", borderRight: "0px"}}>Duration</th>
                                 </tr>
                                 </thead>
                                 <TransitionGroup id="eventContent" component="tbody" transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
@@ -63,7 +63,7 @@ export class EventBox extends React.Component {
                                                             {response.id}
                                                         </span>
                                                     </td>
-                                                    <td style={{width: "1%", minWidth: "60px"}}>{event.duration}ms</td>
+                                                    <td style={{width: "1%", minWidth: "100px", maxWidth: "100px"}}>{event.duration}ms</td>
                                                 </tr>
 
                                             )
