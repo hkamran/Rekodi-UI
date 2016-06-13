@@ -3,22 +3,28 @@
  */
 import React from 'react';
 import {render} from 'react-dom';
-import {Tape} from './components/Tape';
-import {Message} from './components/Message';
-import {Event} from './components/Event';
+
+import {TapeBox} from './components/TapeBox';
+import {MessageBox} from './components/MessageBox';
+import {EventBox} from './components/EventsBox';
+
+import {Request} from '../../../models/Request';
+import {Response} from '../../../models/Response';
 
 export class Dashboard extends React.Component {
+
+
     render() {
         return (
             <div className="grow width height">
                 <div id="analysisContainer" style={{height: "calc(50% - 5px)"}}>
-                    <Tape />
+                    <TapeBox tape={this.props.tape} message={this.props.message} search={this.props.search} setSearchHandler={this.props.setSearchHandler} setMessageHandler={this.props.setMessageHandler} />
 
                     <div id="analysisSplitter" className="splitter horizontal">
                         <div className="splitter horizontal grabber"></div>
                     </div>
 
-                    <Message />
+                    <MessageBox message={this.props.message} />
                 </div>
 
                 <div id="contentSplitter">
@@ -27,7 +33,7 @@ export class Dashboard extends React.Component {
                     </div>
                 </div>
 
-                <Event />
+                <EventBox events={this.props.events} setMessageHandler={this.props.setMessageHandler} />
             </div>
         )
     }

@@ -79,7 +79,7 @@
     height: auto;
     display: table-row;
     position: absolute;
-    top: 29px;
+    top: 28px;
     bottom: 0px;
     width: 100%;
     overflow: auto;
@@ -157,8 +157,7 @@
     height: 52px;
     padding: 10px;
     box-sizing: border-box;
-    background: #fff;
-    border-bottom: 1px solid #fff;
+
     position: static !important;
     left: 0px;
 }

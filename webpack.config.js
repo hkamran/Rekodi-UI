@@ -1,6 +1,6 @@
 module.exports = {
 	entry: [ 
-		'./src/App.js'
+		'whatwg-fetch', './src/App.js'
 	],
 	output: {
 		path:__dirname,
