@@ -60,8 +60,6 @@ export class TapeBox extends React.Component {
 
                                         var request = this.props.tape.getRequest(id);
                                         var responses = this.props.tape.getResponses(id);
-                                        console.log(this.props.message);
-                                        console.log(this.props.message === request);
 
                                         return (
                                             <ul key={i} className="incoming">
