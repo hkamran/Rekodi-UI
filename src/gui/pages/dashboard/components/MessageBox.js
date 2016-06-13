@@ -57,7 +57,7 @@ export class MessageBox extends React.Component {
                                                     </li>
                                                     <li>
                                                         <div className="properties title">Status:</div>
-                                                        <div className="properties value">{message.status}</div>
+                                                        <div className="properties value"><i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: "#7fcb1d"}}></i> {message.status}</div>
                                                     </li>
                                                     <li>
                                                         <div className="properties title">Content-Length:</div>
