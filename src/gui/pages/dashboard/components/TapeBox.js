@@ -64,7 +64,7 @@ export class TapeBox extends React.Component {
                                         return (
                                             <ul key={i} className="incoming">
                                                 <li>
-                                                    <div className={this.props.message.id === request.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
+                                                    <div className={this.props.message != null && this.props.message.id === request.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
                                                         <i className="fa fa-caret-down" aria-hidden="true" style={{padding: "6px"}} />
                                                         <span onClick={this.props.setMessageHandler.bind(this, request)}>Request: {request.id}</span>
                                                     </div>
@@ -73,7 +73,7 @@ export class TapeBox extends React.Component {
                                                             responses.map(function(response, i) {
                                                                 return (
                                                                     <li key={i} className="message">
-                                                                        <div className={this.props.message.id === response.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
+                                                                        <div className={this.props.message != null && this.props.message.id === response.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
                                                                             <span onClick={this.props.setMessageHandler.bind(this, response)}
                                                                                   style={{marginLeft: "6px"}}>Response: {i}</span>
                                                                         </div>

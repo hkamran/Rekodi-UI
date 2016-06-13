@@ -15,9 +15,22 @@ export class MessageBox extends React.Component {
 
     componentDidMount() {
         this.editor = createTextEditor();
+        $('.CodeMirror ').css({"background":"#fcfcfc"});
     }
 
     componentDidUpdate() {
+        if (this.props.message == null) {
+            return;
+        }
+
+        if (this.props.message.state == "RECORD") {
+            this.editor.setOption("readOnly", false);
+            $('.CodeMirror ').css({"background":"#ffffff", "cursor": "auto"});
+        } else {
+            this.editor.setOption("readOnly", true);
+            $('.CodeMirror ').css({"background":"#fcfcfc", "cursor": "not-allowed"});
+
+        }
         this.editor.setValue(this.props.message.content);
     }
 
@@ -48,6 +61,10 @@ export class MessageBox extends React.Component {
                                         var isResponse = Response.prototype.isPrototypeOf(this.props.message);
 
                                         //id, protocol, status, content, contentLength, contentType)
+                                        if (message == null) {
+                                            return;
+                                        }
+
                                         if (isResponse) {
                                             return (
                                                 <ul>
@@ -145,7 +162,7 @@ var createTextEditor = function() {
         lineWrapping: false,
         lineNumbers: true,
         mode: "xmlAndJsonMode",
-        fixedGutter: true
+        fixedGutter: true,
     });
     return editor;
 }

@@ -25,8 +25,8 @@ export class Service {
             eventEntities.forEach((eventEntity) => {
                 const eventData = eventEntity.data();
 
-                let request = Parser.parseRequest(eventData.request);
-                let response = Parser.parseResponse(eventData.response);
+                let request = Parser.parseRequest(eventData.request, eventData.state);
+                let response = Parser.parseResponse(eventData.response, eventData.state);
                 let duration = eventData.duration;
                 let startTime = eventData.start;
                 let state = eventData.state;
@@ -60,7 +60,7 @@ export class Service {
 
 class Parser {
 
-    static parseRequest(obj) {
+    static parseRequest(obj, state) {
         var method = obj["Method"];
         var protocol = obj["Protocol"];
         var uri = obj["URI"];
@@ -71,12 +71,12 @@ class Parser {
         var hashCode =  obj["hashCode"];
 
         //(id, protocol, method, uri, content, matchType, matchString)
-        var request = new Request(hashCode, protocol, method, uri, content, matchType, matchString);
+        var request = new Request(hashCode, protocol, method, uri, content, matchType, matchString, state);
 
         return request;
     }
 
-    static parseResponse(obj) {
+    static parseResponse(obj, state) {
         var hashCode = obj["hashCode"];
         var contentLength = obj["Content-Length"];
         var contentType = obj["Content-Type"];
@@ -85,7 +85,7 @@ class Parser {
         var content = obj["content"];
 
         //(id, protocol, status, content, contentLength)
-        let response = new Response(hashCode, protocol, status, content, contentLength, contentType);
+        let response = new Response(hashCode, protocol, status, content, contentLength, contentType, state);
 
         return response;
     }

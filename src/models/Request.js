@@ -5,7 +5,7 @@ import React from 'react';
 import {render} from 'react-dom';
 
 export class Request {
-    constructor(id, protocol, method, uri, content, matchType, matchString) {
+    constructor(id, protocol, method, uri, content, matchType, matchString, state) {
         this.id = id;
         this.protocol = protocol;
         this.method = method;
@@ -13,5 +13,6 @@ export class Request {
         this.content = content;
         this.matchType = matchType;
         this.matchString = matchString;
+        this.state = state;
     }
 }

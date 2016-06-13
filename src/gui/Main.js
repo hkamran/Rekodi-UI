@@ -21,7 +21,7 @@ export class Main extends React.Component {
         this.service = new Service("http://127.0.0.1:7090/rest");
         this.state = {
             tape: new Tape(),
-            message:  new Response(1, "", "", "", "", ""),
+            message:  null,
             events: [],
             search: ""
         };
