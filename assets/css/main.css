@@ -211,7 +211,20 @@ html, body {
     border: 1px solid #c4dac0;
 }
 
-.http.label.button {
-    cursor:pointer;
+
+.subnav ul li:hover {
+    background: #565656;
+}
+
+.subnav ul li img {
+    margin-top: 12px;
+    user-select: none;
+    -ms-user-select: none;      /* IE 10+ */
+    -moz-user-select: none;     /* Firefox all */
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+}
+
+.subnav ul li:hover img {
+    filter: brightness(118%);
 }
 
