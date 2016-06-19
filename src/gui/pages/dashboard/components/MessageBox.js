@@ -6,11 +6,11 @@ import {render} from 'react-dom';
 
 import {Request} from '../../../../models/Request';
 import {Response} from '../../../../models/Response';
+import {Event, State} from '../../../../models/Event';
 
 export class MessageBox extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
     }
 
     componentDidMount() {
@@ -19,22 +19,22 @@ export class MessageBox extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.message == null) {
+        var message = this.props.message;
+
+        if (message == null) {
             return;
         }
 
-        if (this.props.message.state == "RECORD") {
+        if (message.state.equals(State.RECORD)) {
             this.editor.setOption("readOnly", false);
             $('.CodeMirror ').css({"background":"#ffffff", "cursor": "auto"});
         } else {
             this.editor.setOption("readOnly", true);
             $('.CodeMirror ').css({"background":"#fcfcfc", "cursor": "not-allowed"});
-
         }
-        this.editor.setValue(this.props.message.content);
+
+        this.editor.setValue(message.content);
     }
-
-
 
     render() {
         return (
@@ -55,6 +55,8 @@ export class MessageBox extends React.Component {
                         </div>
                         <div className="properties content">
                             <div className="properties wrapper">
+
+
                                 {
                                     (function () {
                                         var message = this.props.message;
@@ -64,6 +66,8 @@ export class MessageBox extends React.Component {
                                         if (message == null) {
                                             return;
                                         }
+
+
 
                                         if (isResponse) {
                                             return (
@@ -76,14 +80,16 @@ export class MessageBox extends React.Component {
                                                         <div className="properties title">Status:</div>
                                                         <div className="properties value"><i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: "#7fcb1d"}}></i> {message.status}</div>
                                                     </li>
-                                                    <li>
-                                                        <div className="properties title">Content-Length:</div>
-                                                        <div className="properties value">{message.contentLength}</div>
-                                                    </li>
-                                                    <li>
-                                                        <div className="properties title">Content-Type:</div>
-                                                        <div className="properties value">{message.contentType}</div>
-                                                    </li>
+                                                    {
+                                                        Object.keys(message.headers).map(function (key, i) {
+                                                            return (
+                                                                <li key={i}>
+                                                                    <div className="properties title">{key}:</div>
+                                                                    <div className="properties value">{message.headers[key]}</div>
+                                                                </li>
+                                                            )
+                                                        })
+                                                    }
                                                 </ul>
                                             )
                                         } else {
@@ -102,6 +108,17 @@ export class MessageBox extends React.Component {
                                                         <div className="properties title">URI:</div>
                                                         <div className="properties value">{message.uri}</div>
                                                     </li>
+                                                    {
+                                                        Object.keys(message.headers).map(function (key, i) {
+                                                            return (
+                                                                <li key={i}>
+                                                                    <div className="properties title">{key}:</div>
+                                                                    <div className="properties value">{message.headers[key]}</div>
+                                                                </li>
+                                                            )
+                                                        })
+                                                    }
+
                                                     <li>
                                                         <div className="properties title">Match Type:</div>
                                                         <div className="properties value">{message.matchType}</div>

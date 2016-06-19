@@ -11,7 +11,7 @@ import {Service} from '../controllers/Service'
 import {Request} from '../models/Request';
 import {Response} from '../models/Response';
 import {Settings} from '../models/Settings';
-import {Event} from '../models/Event';
+import {Event, State} from '../models/Event';
 import {Tape} from '../models/Tape';
 
 export class Main extends React.Component {
@@ -19,7 +19,7 @@ export class Main extends React.Component {
     constructor(props) {
         super(props);
 
-        this.service = new Service("http://127.0.0.1:7090/rest");
+        this.service = new Service("http://127.0.0.1:7090/rest/default");
 
 
 
@@ -28,7 +28,7 @@ export class Main extends React.Component {
             message:  null,
             events: [],
             search: "",
-            settings: new Settings()
+            settings: new Settings(80,"", new State(State.PROXY), true)
 
         };
     }
@@ -50,10 +50,19 @@ export class Main extends React.Component {
             let request = event.request;
             let response = event.response;
 
-            if (event.state == "RECORD") {
+            var state;
+            if (event.state.equals(State.RECORD)) {
+                state = new State(State.RECORD);
                 this.state.tape.addRequest(event.request);
                 this.state.tape.addResponse(request.id, response);
+            } else if (event.state.equals(State.PROXY)) {
+                state = new State(State.PROXY);
+            } else {
+                state = new State(State.MOCK);
             }
+
+            event.request.state = state;
+            event.response.state = state;
 
             this.state.events.push(event);
             this.refreshState();
@@ -72,15 +81,38 @@ export class Main extends React.Component {
     }
 
     setMessageHandler(message) {
+
         this.setState({
             message: message
         });
     }
 
-    setSettingsHandler(settings) {
-        this.setState({
-            settings: settings
-        });
+    toggleStateHandler() {
+        var settings = this.state.settings.clone();
+        if (settings.state.equals(State.PROXY)) {
+            settings.state = new State(State.MOCK);
+        } else if (settings.state.equals(State.MOCK)) {
+            settings.state = new State(State.RECORD);
+        } else {
+            settings.state = new State(State.PROXY);
+        }
+
+        this.service.setSettings(settings, function() {
+            this.fetchSettings();
+        }.bind(this));
+    }
+
+    toggleRedirectHandler() {
+        var settings = this.state.settings.clone();
+        if (settings.redirect) {
+            settings.redirect = false;
+        } else{
+            settings.redirect = true;
+        }
+
+        this.service.setSettings(settings, function() {
+            this.fetchSettings();
+        }.bind(this));
     }
 
     setTapeHandler(tape) {
@@ -95,11 +127,14 @@ export class Main extends React.Component {
         });
     }
 
+    setSettingsHandler(settings) {
+        this.setState({
+            settings: settings
+        });
+    }
+
     setSearchHandler(search) {
         this.setState({
-            tape: this.state.tape,
-            message: this.state.message,
-            events: this.state.events,
             search: search
         });
     }
@@ -119,7 +154,9 @@ export class Main extends React.Component {
                 <Header />
                 <div className="breaker"></div>
                 <div className="main">
-                    <Subnav />
+                    <Subnav settings={this.state.settings}
+                            toggleStateHandler={this.toggleStateHandler.bind(this)}
+                            toggleRedirectHandler={this.toggleRedirectHandler.bind(this)}/>
                     <div className="container">
                         <div className="content ">
                             <Dashboard tape={this.state.tape}

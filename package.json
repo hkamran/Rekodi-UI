@@ -16,6 +16,7 @@
     "webpack-dev-server": "^1.14.*"
   },
   "dependencies": {
+    "jquery": "^3.0.0",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
     "restful.js": "^0.9.6",

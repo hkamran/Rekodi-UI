@@ -5,7 +5,9 @@ import React from 'react';
 import {render} from 'react-dom';
 
 import {Tape} from '../../../../models/Tape';
-
+import {Event, State} from '../../../../models/Event';
+import {Request} from '../../../../models/Request';
+import {Response} from '../../../../models/Response';
 
 export class TapeBox extends React.Component {
 
@@ -22,7 +24,6 @@ export class TapeBox extends React.Component {
             this.refs.filterTextInput.value
         );
     }
-
 
     render() {
         return (
@@ -71,11 +72,21 @@ export class TapeBox extends React.Component {
                                                     <ul>
                                                         {
                                                             responses.map(function(response, i) {
+
+                                                                var isResponse = false;
+                                                                var isMessage = false;
+                                                                if (this.props.message != null ) {
+                                                                    isResponse = this.props.message instanceof Response;
+                                                                    if (isResponse && this.props.message.hashCode === response.hashCode) {
+                                                                        isMessage = true;
+                                                                    }
+                                                                }
+
                                                                 return (
                                                                     <li key={i} className="message">
-                                                                        <div className={this.props.message != null && this.props.message.id === response.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
+                                                                        <div className={isMessage ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
                                                                             <span onClick={this.props.setMessageHandler.bind(this, response)}
-                                                                                  style={{marginLeft: "6px"}}>Response: {i}</span>
+                                                                                  style={{marginLeft: "6px"}}>Response: {response.id}</span>
                                                                         </div>
                                                                     </li>
                                                                 )

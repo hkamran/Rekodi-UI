@@ -46,6 +46,7 @@ export class EventBox extends React.Component {
                                     {
 
                                         this.props.events.map(function(event, i, props) {
+
                                             var request = event.request;
                                             var response = event.response;
 
@@ -60,7 +61,7 @@ export class EventBox extends React.Component {
                                                     </td>
                                                     <td style={{width: "1%", minWidth: "120px"}}>
                                                         <span onClick={this.props.setMessageHandler.bind(this, response)}  className="http label button">
-                                                            {response.id}
+                                                            {response.hashCode}
                                                         </span>
                                                     </td>
                                                     <td style={{width: "1%", minWidth: "100px", maxWidth: "100px"}}>{event.duration}ms</td>
