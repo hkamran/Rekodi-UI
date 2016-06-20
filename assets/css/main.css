@@ -225,6 +225,7 @@ html, body {
 }
 
 .subnav ul li:hover img {
+    -webkit-filter: brightness(118%);
     filter: brightness(118%);
 }
 

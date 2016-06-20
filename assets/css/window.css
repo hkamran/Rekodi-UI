@@ -127,11 +127,11 @@
 }
 
 .properties ul li {
-    display: block;
+    display: inline-block;
     clear: left;
     float: left;
     margin-bottom: 1px;
-
+    white-space: nowrap;
 }
 
 .properties .title {
@@ -145,13 +145,11 @@
 }
 
 .properties .value {
-    float: left;
     font-family: Consolas, Arial, sans-serif;
     font-size: 9pt;
     display: inline-block;
     text-overflow: ellipsis;
     word-wrap: break-word;
-
 }
 
 
