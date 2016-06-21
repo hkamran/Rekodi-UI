@@ -26,4 +26,5 @@ export class Response {
 
         return new Response(id, protocol, status, content, headers, state, hashCode);
     }
+
 }
