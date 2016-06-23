@@ -16,7 +16,6 @@ export class Response {
     }
 
     static parseJSON(source, state) {
-
         var status = source["status"];
         var protocol = source["protocol"];
         var content = source["content"];
@@ -28,11 +27,16 @@ export class Response {
     }
 
     clone() {
+        var headers = {};
+        Object.keys(this.headers).map(function(key, i) {
+            headers[key] = this.headers[key];
+        }.bind(this));
+
         return new Response(this.id,
             this.protocol,
             this.status,
             this.content,
-            this.headers,
+            headers,
             this.state,
             this.hashCode);
     }

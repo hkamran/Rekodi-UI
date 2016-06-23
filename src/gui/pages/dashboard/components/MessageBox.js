@@ -15,7 +15,7 @@ export class MessageBox extends React.Component {
 
         //(id, protocol, status, content, headers, state, hashCode)
         this.state = {
-            message : new Response(-1, "", 200, "", {}, State.valueOf("PROXY"), "")
+            message : new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), "")
         };
         this.dom = {};
     }
@@ -132,8 +132,8 @@ export class MessageBox extends React.Component {
                                             return (
                                                 <ul>
                                                     <li>
-                                                        <div className="properties title">Protocol:</div>
-                                                        <div className="properties value">
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Protocol:</div>
+                                                        <div className="properties value" style={{cursor: "text"}}>
                                                             <InlineEdit
                                                                 activeClassName="editing"
                                                                 text={message.protocol}
@@ -142,10 +142,24 @@ export class MessageBox extends React.Component {
                                                             />
                                                         </div>
                                                     </li>
-                                                    <li>
-                                                        <div className="properties title">Status:</div>
-                                                        <div className="properties value">
-                                                            <i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: "#7fcb1d"}}></i>
+                                                    <li style={{paddingBottom: "10px"}}>
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Status:</div>
+                                                        <div className="properties value" style={{cursor: "text"}}>
+                                                            {
+                                                                (function() {
+                                                                    var color;
+                                                                    if (message.status == 100) {
+                                                                        color = "#dedede";
+                                                                    } else {
+                                                                        color = "#7fcb1d";
+                                                                    }
+
+                                                                    return (
+                                                                        <i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: color, marginRight: "5px"}} />
+                                                                    )
+                                                                }.bind(this))()
+                                                            }
+
                                                             <InlineEdit
                                                                 activeClassName="editing"
                                                                 text={message.status + ""}
@@ -158,7 +172,7 @@ export class MessageBox extends React.Component {
                                                         Object.keys(message.headers).map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
-                                                                    <div className="properties title">
+                                                                    <div className="properties title" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={key}
@@ -166,7 +180,7 @@ export class MessageBox extends React.Component {
                                                                             change={this.dataChangeHeaderKey.bind(this)}
                                                                         />:
                                                                     </div>
-                                                                    <div className="properties value">
+                                                                    <div className="properties value" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={message.headers[key] + ""}
@@ -185,8 +199,8 @@ export class MessageBox extends React.Component {
                                             return (
                                                 <ul>
                                                     <li>
-                                                        <div className="properties title">Protocol:</div>
-                                                        <div className="properties value">
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Protocol:</div>
+                                                        <div className="properties value" style={{cursor: "text"}}>
                                                             <InlineEdit
                                                                 activeClassName="editing"
                                                                 text={message.protocol}
@@ -196,8 +210,8 @@ export class MessageBox extends React.Component {
                                                         </div>
                                                     </li>
                                                     <li>
-                                                        <div className="properties title">Method:</div>
-                                                        <div className="properties value">
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Method:</div>
+                                                        <div className="properties value" style={{cursor: "text"}}>
                                                             <InlineEdit
                                                                 activeClassName="editing"
                                                                 text={message.method}
@@ -206,9 +220,9 @@ export class MessageBox extends React.Component {
                                                             />
                                                         </div>
                                                     </li>
-                                                    <li>
-                                                        <div className="properties title">URI:</div>
-                                                        <div className="properties value">
+                                                    <li style={{paddingBottom: "10px"}}>
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>URI:</div>
+                                                        <div className="properties value" style={{cursor: "text"}}>
                                                             <InlineEdit
                                                                 activeClassName="editing"
                                                                 text={message.uri}
@@ -221,7 +235,7 @@ export class MessageBox extends React.Component {
                                                         Object.keys(message.headers).map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
-                                                                    <div className="properties title">
+                                                                    <div className="properties title" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={key}
@@ -229,7 +243,7 @@ export class MessageBox extends React.Component {
                                                                             change={this.dataChangeHeaderKey.bind(this)}
                                                                         />:
                                                                     </div>
-                                                                    <div className="properties value">
+                                                                    <div className="properties value" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={message.headers[key] + ""}

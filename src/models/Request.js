@@ -31,12 +31,17 @@ export class Request {
     }
 
     clone() {
+        var headers = {};
+        Object.keys(this.headers).map(function(key, i) {
+            headers[key] = this.headers[key];
+        }.bind(this));
+
         return new Request(this.id,
             this.protocol,
             this.method,
             this.uri,
             this.content,
-            this.headers,
+            headers,
             this.matchType,
             this.matchString,
             this.state);
