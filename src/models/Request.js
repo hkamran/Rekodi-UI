@@ -30,4 +30,16 @@ export class Request {
         return new Request(id, protocol, method, uri, content, headers, matchType, matchString, state);
     }
 
+    clone() {
+        return new Request(this.id,
+            this.protocol,
+            this.method,
+            this.uri,
+            this.content,
+            this.headers,
+            this.matchType,
+            this.matchString,
+            this.state);
+    }
+
 }

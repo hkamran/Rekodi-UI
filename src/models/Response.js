@@ -27,4 +27,13 @@ export class Response {
         return new Response(id, protocol, status, content, headers, state, hashCode);
     }
 
+    clone() {
+        return new Response(this.id,
+            this.protocol,
+            this.status,
+            this.content,
+            this.headers,
+            this.state,
+            this.hashCode);
+    }
 }

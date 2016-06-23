@@ -8,13 +8,13 @@ export class Header extends React.Component {
     render() {
         return (
             <div className="header" style={{height: "90px", position: "relative", background: "#353535 "}}>
-                <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #858585"}}>
-                    
+                <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #353535"}}>
+
                     <div style={{float: "left", width: "60px", height: "1px"}}> </div>
 
                     <div className="tab wrapper">
                         <div className="tab top border selected" >
-                            <div className="tab top container selected">
+                            <div className="tab top container selected text" style={{width: "80px"}} >
 
                             </div>
                         </div>
@@ -24,7 +24,18 @@ export class Header extends React.Component {
                     <div className="tab wrapper">
                         <div  className="tab top border unselected">
                             <div className="tab top container unselected">
-                                <div style={{height: "100%",  borderRight: "1px solid #999999" }}>
+                                <div className="tab text" style={{width: "60px", height: "100%",  paddingTop: "2px", borderRight: "1px solid #999999", fontSize: "12pt", fontWeight: "600"}}>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tab bottom unselected"></div>
+                    </div>
+
+                    <div className="tab wrapper">
+                        <div  className="tab top border unselected">
+                            <div className="tab top container unselected">
+                                <div className="tab text" style={{width: "60px", height: "100%",  paddingTop: "2px", borderRight: "1px solid #999999", fontSize: "12pt", fontWeight: "600"}}>
 
                                 </div>
                             </div>

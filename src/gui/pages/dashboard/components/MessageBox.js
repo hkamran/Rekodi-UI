@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import {render} from 'react-dom';
+import InlineEdit from 'react-edit-inline';
 
 import {Request} from '../../../../models/Request';
 import {Response} from '../../../../models/Response';
@@ -11,29 +12,91 @@ import {Event, State} from '../../../../models/Event';
 export class MessageBox extends React.Component {
     constructor(props) {
         super(props);
+
+        //(id, protocol, status, content, headers, state, hashCode)
+        this.state = {
+            message : new Response(-1, "", 200, "", {}, State.valueOf("PROXY"), "")
+        };
+        this.dom = {};
     }
 
     componentDidMount() {
         this.editor = createTextEditor();
-        $('.CodeMirror ').css({"background":"#fcfcfc"});
+        this.dom.editor = $('.CodeMirror ');
+        this.dom.editor.css({"background":"#fcfcfc"});
     }
 
-    componentDidUpdate() {
-        var message = this.props.message;
-
-        if (message == null) {
+    componentWillReceiveProps(nextProps){
+        if (nextProps.message == null) {
             return;
         }
 
+        var message = nextProps.message.clone();
+        this.setMessage(message);
+    }
+
+    componentDidUpdate() {
+        var message = this.state.message;
+
         if (message.state.equals(State.RECORD)) {
             this.editor.setOption("readOnly", false);
-            $('.CodeMirror ').css({"background":"#ffffff", "cursor": "auto"});
+            this.dom.editor.css({"background":"#ffffff", "cursor": "auto"});
         } else {
             this.editor.setOption("readOnly", true);
-            $('.CodeMirror ').css({"background":"#fcfcfc", "cursor": "not-allowed"});
+            this.dom.editor.css({"background":"#fcfcfc", "cursor": "not-allowed"});
         }
 
         this.editor.setValue(message.content);
+    }
+
+    dataChangeResponse(data) {
+        if (typeof data.protocol !== 'undefined') {
+            this.state.message.protocol = data.protocol;
+        } else if (typeof data.status !== 'undefined') {
+            this.state.message.status = parseInt(data.status);
+        }
+
+        this.setMessage(this.state.message);
+    }
+
+    dataChangeRequest(data) {
+        if (typeof data.protocol !== 'undefined') {
+            this.state.message.protocol = data.protocol;
+        } else if (typeof data.method !== 'undefined') {
+            this.state.message.method = parseInt(data.method);
+        } else if (typeof data.uri !== 'undefined') {
+            this.state.message.uri = parseInt(data.uri);
+        }
+
+        this.setMessage(this.state.message);
+    }
+
+    dataChangeHeaderValue(data) {
+        Object.keys(data).map(function (key, i) {
+            this.state.message.headers[key] = data[key];
+        }.bind(this));
+        this.setMessage(this.state.message);
+    }
+
+    dataChangeHeaderKey(data) {
+        Object.keys(data).map(function (key, i) {
+            var newKey = data[key];
+            var oldKey = key;
+
+            var value = this.state.message.headers[oldKey];
+
+            delete this.state.message.headers[oldKey];
+
+            this.state.message.headers[newKey] = value;
+        }.bind(this));
+        this.setMessage(this.state.message);
+    }
+
+    setMessage(message) {
+        console.log(message);
+        this.setState({
+            message: message
+        });
     }
 
     render() {
@@ -59,36 +122,61 @@ export class MessageBox extends React.Component {
 
                                 {
                                     (function () {
-                                        var message = this.props.message;
-                                        var isResponse = Response.prototype.isPrototypeOf(this.props.message);
-
-                                        //id, protocol, status, content, contentLength, contentType)
+                                        var message = this.state.message;
                                         if (message == null) {
                                             return;
                                         }
 
-
-
-                                        if (isResponse) {
+                                        if (message instanceof Response) {
+                                            //id, protocol, status, content, contentLength, contentType)
                                             return (
                                                 <ul>
                                                     <li>
                                                         <div className="properties title">Protocol:</div>
-                                                        <div className="properties value">{message.protocol}</div>
+                                                        <div className="properties value">
+                                                            <InlineEdit
+                                                                activeClassName="editing"
+                                                                text={message.protocol}
+                                                                paramName="protocol"
+                                                                change={this.dataChangeResponse.bind(this)}
+                                                            />
+                                                        </div>
                                                     </li>
                                                     <li>
                                                         <div className="properties title">Status:</div>
-                                                        <div className="properties value"><i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: "#7fcb1d"}}></i> {message.status}</div>
+                                                        <div className="properties value">
+                                                            <i class="fa fa-circle" is="null" aria-hidden="true" style={{fontSize: "7pt", color: "#7fcb1d"}}></i>
+                                                            <InlineEdit
+                                                                activeClassName="editing"
+                                                                text={message.status + ""}
+                                                                paramName="status"
+                                                                change={this.dataChangeResponse.bind(this)}
+                                                            />
+                                                        </div>
                                                     </li>
                                                     {
                                                         Object.keys(message.headers).map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
-                                                                    <div className="properties title">{key}:</div>
-                                                                    <div className="properties value">{message.headers[key]}</div>
+                                                                    <div className="properties title">
+                                                                        <InlineEdit
+                                                                            activeClassName="editing"
+                                                                            text={key}
+                                                                            paramName={key}
+                                                                            change={this.dataChangeHeaderKey.bind(this)}
+                                                                        />:
+                                                                    </div>
+                                                                    <div className="properties value">
+                                                                        <InlineEdit
+                                                                            activeClassName="editing"
+                                                                            text={message.headers[key] + ""}
+                                                                            paramName={key}
+                                                                            change={this.dataChangeHeaderValue.bind(this)}
+                                                                        />
+                                                                    </div>
                                                                 </li>
                                                             )
-                                                        })
+                                                        }.bind(this))
                                                     }
                                                 </ul>
                                             )
@@ -98,25 +186,60 @@ export class MessageBox extends React.Component {
                                                 <ul>
                                                     <li>
                                                         <div className="properties title">Protocol:</div>
-                                                        <div className="properties value">{message.protocol}</div>
+                                                        <div className="properties value">
+                                                            <InlineEdit
+                                                                activeClassName="editing"
+                                                                text={message.protocol}
+                                                                paramName="protocol"
+                                                                change={this.dataChangeRequest.bind(this)}
+                                                            />
+                                                        </div>
                                                     </li>
                                                     <li>
                                                         <div className="properties title">Method:</div>
-                                                        <div className="properties value">{message.method}</div>
+                                                        <div className="properties value">
+                                                            <InlineEdit
+                                                                activeClassName="editing"
+                                                                text={message.method}
+                                                                paramName="method"
+                                                                change={this.dataChangeRequest.bind(this)}
+                                                            />
+                                                        </div>
                                                     </li>
                                                     <li>
                                                         <div className="properties title">URI:</div>
-                                                        <div className="properties value">{message.uri}</div>
+                                                        <div className="properties value">
+                                                            <InlineEdit
+                                                                activeClassName="editing"
+                                                                text={message.uri}
+                                                                paramName="uri"
+                                                                change={this.dataChangeRequest.bind(this)}
+                                                            />
+                                                        </div>
                                                     </li>
                                                     {
                                                         Object.keys(message.headers).map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
-                                                                    <div className="properties title">{key}:</div>
-                                                                    <div className="properties value">{message.headers[key]}</div>
+                                                                    <div className="properties title">
+                                                                        <InlineEdit
+                                                                            activeClassName="editing"
+                                                                            text={key}
+                                                                            paramName={key}
+                                                                            change={this.dataChangeHeaderKey.bind(this)}
+                                                                        />:
+                                                                    </div>
+                                                                    <div className="properties value">
+                                                                        <InlineEdit
+                                                                            activeClassName="editing"
+                                                                            text={message.headers[key] + ""}
+                                                                            paramName={key}
+                                                                            change={this.dataChangeHeaderValue.bind(this)}
+                                                                        />
+                                                                    </div>
                                                                 </li>
                                                             )
-                                                        })
+                                                        }.bind(this))
                                                     }
 
                                                     <li>

@@ -19,18 +19,16 @@ export class Main extends React.Component {
     constructor(props) {
         super(props);
 
-        this.service = new Service("http://127.0.0.1:7090/rest/default");
-
-
-
         this.state = {
+            proxy: "default",
             tape: new Tape(),
             message:  null,
             events: [],
             search: "",
             settings: new Settings(80,"", new State(State.PROXY), true)
-
         };
+
+        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
     }
 
     fetchTape() {
@@ -78,6 +76,13 @@ export class Main extends React.Component {
         setInterval(function () {
             this.fetchEvents();
         }.bind(this), 1000);
+    }
+
+    setProxyHandler(proxyName) {
+        this.setState({
+            proxy: proxyName
+        });
+        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
     }
 
     setMessageHandler(message) {
