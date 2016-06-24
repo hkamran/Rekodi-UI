@@ -22,7 +22,7 @@ export class Main extends React.Component {
         this.state = {
             proxy: "default",
             tape: new Tape(),
-            message:  null,
+            message:  new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), ""),
             events: [],
             search: "",
             settings: new Settings(80,"", new State(State.PROXY), true)

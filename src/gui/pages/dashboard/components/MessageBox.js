@@ -10,13 +10,14 @@ import {Response} from '../../../../models/Response';
 import {Event, State} from '../../../../models/Event';
 
 export class MessageBox extends React.Component {
+
     constructor(props) {
         super(props);
 
-        //(id, protocol, status, content, headers, state, hashCode)
         this.state = {
-            message : new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), "")
-        };
+            message: props.message.clone(),
+            dirty: false
+        }
         this.dom = {};
     }
 
@@ -32,6 +33,7 @@ export class MessageBox extends React.Component {
         }
 
         var message = nextProps.message.clone();
+        this.setDirty(false);
         this.setMessage(message);
     }
 
@@ -57,6 +59,7 @@ export class MessageBox extends React.Component {
         }
 
         this.setMessage(this.state.message);
+        this.setDirty(true);
     }
 
     dataChangeRequest(data) {
@@ -69,6 +72,7 @@ export class MessageBox extends React.Component {
         }
 
         this.setMessage(this.state.message);
+        this.setDirty(true);
     }
 
     dataChangeHeaderValue(data) {
@@ -76,6 +80,7 @@ export class MessageBox extends React.Component {
             this.state.message.headers[key] = data[key];
         }.bind(this));
         this.setMessage(this.state.message);
+        this.setDirty(true);
     }
 
     dataChangeHeaderKey(data) {
@@ -90,12 +95,19 @@ export class MessageBox extends React.Component {
             this.state.message.headers[newKey] = value;
         }.bind(this));
         this.setMessage(this.state.message);
+        this.setDirty(true);
     }
 
     setMessage(message) {
         console.log(message);
         this.setState({
             message: message
+        });
+    }
+
+    setDirty(flag) {
+        this.setState({
+            dirty: flag
         });
     }
 
@@ -256,7 +268,7 @@ export class MessageBox extends React.Component {
                                                         }.bind(this))
                                                     }
 
-                                                    <li>
+                                                    <li style={{paddingTop: "10px"}}>
                                                         <div className="properties title">Match Type:</div>
                                                         <div className="properties value">{message.matchType}</div>
                                                     </li>
@@ -295,6 +307,15 @@ export class MessageBox extends React.Component {
         )
     }
 }
+
+MessageBox.propTypes = {
+    message: React.PropTypes.object.isRequired
+};
+
+MessageBox.defaultProps = {
+    message: new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), "")
+};
+
 
 var createTextEditor = function() {
     var mixedMode = {

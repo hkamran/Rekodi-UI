@@ -14,8 +14,9 @@ export class Header extends React.Component {
 
                     <div className="tab wrapper">
                         <div className="tab top border selected" >
-                            <div className="tab top container selected text" style={{width: "80px"}} >
-
+                            <div className="tab top container selected text" >
+                                <span style={{fontSize: "9pt"}}>Default Service</span>
+                                <i className="fa fa-times" style={{marginLeft: "8px", color: "#8d8d8d"}}></i>
                             </div>
                         </div>
                         <div className="tab bottom selected"></div>
