@@ -93,10 +93,7 @@ export class Main extends React.Component {
         if (message instanceof Request) {
             message.content = content;
             this.service.setRequest(message, function(response) {
-
-                if (typeof response === 'undefined') {
-
-                } else {
+                if (response instanceof Request) {
                     this.state.tape.setRequest(this.state.message.id, response);
                     this.setMessageHandler(response);
                 }

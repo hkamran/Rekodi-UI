@@ -17,7 +17,13 @@ export class Tape {
     }
 
     setRequest(hashCode, request) {
-        this.requests[hashCode].request = request;
+        var responses = this.requests[hashCode].responses;
+        delete this.requests[hashCode];
+        this.requests[request.id] = {
+            request: request,
+            responses: responses
+        };
+
     }
 
     addRequest(request) {

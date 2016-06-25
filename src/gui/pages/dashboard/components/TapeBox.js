@@ -52,7 +52,18 @@ export class TapeBox extends React.Component {
                             <div className="tree" >
 
                                 {
-                                    this.props.tape.getRequests().map(function(id, i) {
+                                    this.props.tape.getRequests().sort(function (a, b) {
+                                            if (a == null || a.id == null) {
+                                                return -1;
+                                            }
+                                            if (a.id > b.id) {
+                                                return 1;
+                                            }
+                                            if (a.id < b.id) {
+                                                return 1;
+                                            }
+                                            return 0;
+                                        }).map(function(id, i) {
 
                                         var search = this.props.search;
                                         if (search.length > 0 && (id.indexOf(search) === -1)) {
@@ -71,7 +82,18 @@ export class TapeBox extends React.Component {
                                                     </div>
                                                     <ul>
                                                         {
-                                                            responses.map(function(response, i) {
+                                                            responses.sort(function (a, b) {
+                                                                if (a == null || a.id == null) {
+                                                                    return -1;
+                                                                }
+                                                                if (a.id > b.id) {
+                                                                    return 1;
+                                                                }
+                                                                if (a.id < b.id) {
+                                                                    return 1;
+                                                                }
+                                                                return 0;
+                                                            }).map(function(response, i) {
 
                                                                 var isResponse = false;
                                                                 var isMessage = false;
