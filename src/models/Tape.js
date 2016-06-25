@@ -16,6 +16,10 @@ export class Tape {
         return this.requests[hashCode].request;
     }
 
+    setRequest(hashCode, request) {
+        this.requests[hashCode].request = request;
+    }
+
     addRequest(request) {
         var key = this.requests[request.id];
         if (typeof key === 'undefined') {

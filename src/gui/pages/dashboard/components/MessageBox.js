@@ -66,9 +66,9 @@ export class MessageBox extends React.Component {
         if (typeof data.protocol !== 'undefined') {
             this.state.message.protocol = data.protocol;
         } else if (typeof data.method !== 'undefined') {
-            this.state.message.method = parseInt(data.method);
+            this.state.message.method = data.method;
         } else if (typeof data.uri !== 'undefined') {
-            this.state.message.uri = parseInt(data.uri);
+            this.state.message.uri = data.uri;
         }
 
         this.setMessage(this.state.message);
@@ -112,6 +112,7 @@ export class MessageBox extends React.Component {
     }
 
     render() {
+
         return (
 
             <div id="messageContainer" className="box">
@@ -119,8 +120,8 @@ export class MessageBox extends React.Component {
                 <div className="header">
                     <div className="item left border">Message</div>
 
-                    <div className="item right border"><i className="fa fa-code" aria-hidden="true"></i></div>
-                    <div className="item right border"><i className="fa fa-floppy-o" aria-hidden="true"></i></div>
+                    <div className="item right border"><i className="fa fa-code" aria-hidden="true" /></div>
+                    <div className="item right border" onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)} ><i className="fa fa-floppy-o" aria-hidden="true" /></div>
 
                 </div>
                 <div className="body min">
@@ -181,7 +182,7 @@ export class MessageBox extends React.Component {
                                                         </div>
                                                     </li>
                                                     {
-                                                        Object.keys(message.headers).map(function (key, i) {
+                                                        Object.keys(message.headers).sort().map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
                                                                     <div className="properties title" style={{cursor: "text"}}>
@@ -244,7 +245,7 @@ export class MessageBox extends React.Component {
                                                         </div>
                                                     </li>
                                                     {
-                                                        Object.keys(message.headers).map(function (key, i) {
+                                                        Object.keys(message.headers).sort().map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
                                                                     <div className="properties title" style={{cursor: "text"}}>

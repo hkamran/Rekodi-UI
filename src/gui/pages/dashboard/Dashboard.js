@@ -24,7 +24,7 @@ export class Dashboard extends React.Component {
                         <div className="splitter horizontal grabber"></div>
                     </div>
 
-                    <MessageBox message={this.props.message} />
+                    <MessageBox message={this.props.message} updateMessageHandler={this.props.updateMessageHandler} />
                 </div>
 
                 <div id="contentSplitter">

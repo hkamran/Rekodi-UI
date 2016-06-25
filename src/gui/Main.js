@@ -31,6 +31,16 @@ export class Main extends React.Component {
         this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
     }
 
+    componentDidMount() {
+        this.fetchTape();
+        this.fetchEvents();
+        this.fetchSettings();
+        setInterval(function () {
+            this.fetchEvents();
+        }.bind(this), 1000);
+    }
+
+
     fetchTape() {
         this.service.getTape(function(tape){
             this.setTapeHandler(tape);
@@ -69,27 +79,29 @@ export class Main extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.fetchTape();
-        this.fetchEvents();
-        this.fetchSettings();
-        setInterval(function () {
-            this.fetchEvents();
-        }.bind(this), 1000);
+    fetchRequest(requestId, callback) {
+        this.service.getRequest(requestId, callback);
     }
 
-    setProxyHandler(proxyName) {
-        this.setState({
-            proxy: proxyName
-        });
-        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
+    fetchResponse(requestId, responseId) {
+
     }
 
-    setMessageHandler(message) {
 
-        this.setState({
-            message: message
-        });
+    updateMessageHandler(message, editor) {
+        var content = editor.getValue();
+        if (message instanceof Request) {
+            message.content = content;
+            this.service.setRequest(message, function(response) {
+
+                if (typeof response === 'undefined') {
+
+                } else {
+                    this.state.tape.setRequest(this.state.message.id, response);
+                    this.setMessageHandler(response);
+                }
+            }.bind(this))
+        }
     }
 
     toggleStateHandler() {
@@ -144,6 +156,21 @@ export class Main extends React.Component {
         });
     }
 
+    setProxyHandler(proxyName) {
+        this.setState({
+            proxy: proxyName
+        });
+        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
+    }
+
+    setMessageHandler(message) {
+
+        this.setState({
+            message: message
+        });
+    }
+
+
     refreshState() {
         this.setState({
             tape: this.state.tape,
@@ -169,7 +196,9 @@ export class Main extends React.Component {
                                        message={this.state.message}
                                        search={this.state.search}
                                        setMessageHandler={this.setMessageHandler.bind(this)}
-                                       setSearchHandler={this.setSearchHandler.bind(this)} />
+                                       setSearchHandler={this.setSearchHandler.bind(this)}
+                                       updateMessageHandler={this.updateMessageHandler.bind(this)}
+                            />
                         </div>
                     </div>
                 </div>

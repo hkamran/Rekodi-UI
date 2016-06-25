@@ -29,6 +29,18 @@ export class Service {
         });
     }
 
+    getRequest(id, callback) {
+        const requestCollection = this.api.custom ('tape').custom(id);
+        requestCollection.get().then((response) => {
+            const requestEntity = response.body();
+            const requestData = requestEntity.data();
+
+            var request = Request.parseJSON(requestData, new State(State.RECORD));
+            console.log(request);
+            callback(request);
+        });
+    }
+
     getSettings(callback) {
         const settingsCollection = this.api.custom ('/');
         settingsCollection.get().then((response) => {
@@ -84,6 +96,23 @@ export class Service {
         });
     }
 
-
+    setRequest(request, callback) {
+        $.ajax({
+            url: this.url + "/tape/" + request.id,
+            type: 'POST',
+            crossDomain: true,
+            headers: {
+                "Accept": "application/json; charset=utf-8",
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            data: JSON.stringify(request),
+        }).done(function (data) {
+                var request = Request.parseJSON(data, new State(State.RECORD));
+                callback(request)
+        })
+        .fail(function () {
+            callback(null)
+        });
+    }
 
 }
