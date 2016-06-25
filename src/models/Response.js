@@ -5,25 +5,28 @@ import React from 'react';
 import {render} from 'react-dom';
 
 export class Response {
-    constructor(id, protocol, status, content, headers, state, hashCode) {
+    constructor(id, protocol, status, content, headers, state, parent, hashCode) {
         this.id = id;
         this.protocol = protocol;
         this.status = status;
         this.content = content;
-        this.state = state;
         this.hashCode = hashCode;
         this.headers = headers;
+        this.state = state;
+        this.parent = parent;
     }
 
-    static parseJSON(source, state) {
+    static parseJSON(source) {
         var status = source["status"];
         var protocol = source["protocol"];
         var content = source["content"];
         var hashCode = source["hashCode"];
         var headers = source["headers"];
         var id = source["id"];
+        var state = source["state"];
+        var parent = source["parent"];
 
-        return new Response(id, protocol, status, content, headers, state, hashCode);
+        return new Response(id, protocol, status, content, headers, state, parent, hashCode);
     }
 
     clone() {
@@ -38,6 +41,7 @@ export class Response {
             this.content,
             headers,
             this.state,
+            this.parent,
             this.hashCode);
     }
 }

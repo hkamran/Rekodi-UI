@@ -82,18 +82,7 @@ export class TapeBox extends React.Component {
                                                     </div>
                                                     <ul>
                                                         {
-                                                            responses.sort(function (a, b) {
-                                                                if (a == null || a.id == null) {
-                                                                    return -1;
-                                                                }
-                                                                if (a.id > b.id) {
-                                                                    return 1;
-                                                                }
-                                                                if (a.id < b.id) {
-                                                                    return 1;
-                                                                }
-                                                                return 0;
-                                                            }).map(function(response, i) {
+                                                            responses.map(function(response, i) {
 
                                                                 var isResponse = false;
                                                                 var isMessage = false;

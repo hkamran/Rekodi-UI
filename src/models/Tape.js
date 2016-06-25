@@ -16,8 +16,18 @@ export class Tape {
         return this.requests[hashCode].request;
     }
 
+    containsRequest(hashCode) {
+        if (typeof this.requests[hashCode] === 'undefined') {
+            return false;
+        }
+        return true;
+    }
+
     setRequest(hashCode, request) {
         var responses = this.requests[hashCode].responses;
+        for (var response of responses) {
+            response.parent = request.id;
+        }
         delete this.requests[hashCode];
         this.requests[request.id] = {
             request: request,
@@ -77,6 +87,7 @@ export class Tape {
                 var responseData = dataObj.responses[x];
                 var response = Response.parseJSON(responseData, new State(State.RECORD));
                 tape.addResponse(request.id, response);
+
             }
         }
 

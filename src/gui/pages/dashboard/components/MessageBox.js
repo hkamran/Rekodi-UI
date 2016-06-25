@@ -40,7 +40,7 @@ export class MessageBox extends React.Component {
     componentDidUpdate() {
         var message = this.state.message;
 
-        if (message.state.equals(State.RECORD)) {
+        if (State.cmp(message.state, State.RECORD)) {
             this.editor.setOption("readOnly", false);
             this.dom.editor.css({"background":"#ffffff", "cursor": "auto"});
         } else {

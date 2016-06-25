@@ -25,7 +25,7 @@ export class Main extends React.Component {
             message:  new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), ""),
             events: [],
             search: "",
-            settings: new Settings(80,"", new State(State.PROXY), true)
+            settings: new Settings(80,"", State.PROXY, true)
         };
 
         this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
@@ -55,22 +55,19 @@ export class Main extends React.Component {
 
     fetchEvents() {
         this.service.getEvents(function(event) {
-            let request = event.request;
-            let response = event.response;
+            var request = event.request;
+            var response = event.response;
 
-            var state;
-            if (event.state.equals(State.RECORD)) {
-                state = new State(State.RECORD);
-                this.state.tape.addRequest(event.request);
-                this.state.tape.addResponse(request.id, response);
-            } else if (event.state.equals(State.PROXY)) {
-                state = new State(State.PROXY);
-            } else {
-                state = new State(State.MOCK);
+
+            if (this.state.tape.containsRequest(request.id)) {
+                request = this.state.tape.getRequest(request.id);
+                event.request = request;
             }
 
-            event.request.state = state;
-            event.response.state = state;
+            if (State.cmp(event.state, State.RECORD)) {
+                this.state.tape.addRequest(request);
+                this.state.tape.addResponse(request.id, response);
+            }
 
             this.state.events.push(event);
             this.refreshState();
@@ -79,36 +76,38 @@ export class Main extends React.Component {
 
     }
 
-    fetchRequest(requestId, callback) {
-        this.service.getRequest(requestId, callback);
-    }
-
-    fetchResponse(requestId, responseId) {
-
-    }
-
-
     updateMessageHandler(message, editor) {
         var content = editor.getValue();
         if (message instanceof Request) {
             message.content = content;
-            this.service.setRequest(message, function(response) {
-                if (response instanceof Request) {
-                    this.state.tape.setRequest(this.state.message.id, response);
+            this.service.setRequest(message, function(request) {
+                if (request instanceof Request) {
+                    this.state.tape.setRequest(this.state.message.id, request);
+                    this.state.message.id = request.id;
+                    this.setMessageHandler(request);
+                }
+            }.bind(this));
+        } else if (message instanceof Response) {
+            message.content = content;
+            this.service.setResponse(message, function(response) {
+                if (response instanceof Response) {
+                    this.state.message.hashCode = response.hashCode;
+                    this.state.tape.getResponses(this.state.message.parent)[this.state.message.id] = response;
                     this.setMessageHandler(response);
                 }
-            }.bind(this))
+            }.bind(this));
         }
     }
 
     toggleStateHandler() {
         var settings = this.state.settings.clone();
-        if (settings.state.equals(State.PROXY)) {
-            settings.state = new State(State.MOCK);
-        } else if (settings.state.equals(State.MOCK)) {
-            settings.state = new State(State.RECORD);
+
+        if (State.cmp(settings.state, State.PROXY)) {
+            settings.state = State.MOCK;
+        } else if (State.cmp(settings.state, State.MOCK)) {
+            settings.state = State.RECORD;
         } else {
-            settings.state = new State(State.PROXY);
+            settings.state = State.PROXY;
         }
 
         this.service.setSettings(settings, function() {
@@ -135,12 +134,6 @@ export class Main extends React.Component {
         });
     }
 
-    setEventsHandler(events) {
-        this.setState({
-            events: events
-        });
-    }
-
     setSettingsHandler(settings) {
         this.setState({
             settings: settings
@@ -161,6 +154,16 @@ export class Main extends React.Component {
     }
 
     setMessageHandler(message) {
+
+        if (message instanceof Response) {
+            if (State.cmp(message.state, State.RECORD)) {
+                message = this.state.tape.getResponses(message.parent)[message.id];
+            }
+        } else if (message instanceof Request) {
+            if (State.cmp(message.state, State.RECORD)) {
+                message = this.state.tape.getRequest(message.id);
+            }
+        }
 
         this.setState({
             message: message

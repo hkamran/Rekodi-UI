@@ -5,29 +5,30 @@ import React from 'react';
 import {render} from 'react-dom';
 
 export class Request {
-    constructor(id, protocol, method, uri, content, headers, matchType, matchString, state) {
+    constructor(id, protocol, method, uri, content, headers, state, matchType, matchString) {
         this.id = id;
         this.protocol = protocol;
         this.method = method;
         this.uri = uri;
         this.content = content;
         this.matchType = matchType;
-        this.matchString = matchString;
         this.state = state;
+        this.matchString = matchString;
         this.headers = headers;
     }
 
-    static parseJSON(source, state) {
+    static parseJSON(source) {
         var id = source["id"];
         var protocol = source["protocol"];
         var method = source["method"];
         var uri = source["uri"];
         var content = source["content"];
         var headers = source["headers"];
+        var state = source["state"];
         var matchType = source["matchType"];
         var matchString = source["matchString"];
 
-        return new Request(id, protocol, method, uri, content, headers, matchType, matchString, state);
+        return new Request(id, protocol, method, uri, content, headers, state, matchType, matchString);
     }
 
     clone() {
@@ -42,9 +43,9 @@ export class Request {
             this.uri,
             this.content,
             headers,
+            this.state,
             this.matchType,
-            this.matchString,
-            this.state);
+            this.matchString);
     }
 
 }

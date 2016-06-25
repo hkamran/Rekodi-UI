@@ -27,9 +27,9 @@ export class Subnav extends React.Component {
                         {
                             (function() {
                                 var src = "./assets/images/red_circle_button.png";
-                                if (this.props.settings.state.equals(State.PROXY)) {
+                                if (State.cmp(this.props.settings.state, State.PROXY)) {
                                     src = "./assets/images/green_circle_button.png";
-                                } else if (this.props.settings.state.equals(State.MOCK)) {
+                                } else if (State.cmp(this.props.settings.state, State.MOCK)) {
                                    src="./assets/images/orange_circle_button.png";
                                 }
 

@@ -35,7 +35,7 @@ export class Service {
             const requestEntity = response.body();
             const requestData = requestEntity.data();
 
-            var request = Request.parseJSON(requestData, new State(State.RECORD));
+            var request = Request.parseJSON(requestData);
             console.log(request);
             callback(request);
         });
@@ -72,9 +72,9 @@ export class Service {
     setSettings(settings, callback) {
         console.log(settings);
 
-        if (settings.state.equals(State.MOCK)) {
+        if (State.cmp(settings.state, State.MOCK)) {
             settings.state = "MOCK";
-        } else if (settings.state.equals(State.RECORD)) {
+        } else if (State.cmp(settings.state, State.RECORD)) {
             settings.state = "RECORD";
         } else {
             settings.state = "PROXY";
@@ -107,12 +107,31 @@ export class Service {
             },
             data: JSON.stringify(request),
         }).done(function (data) {
-                var request = Request.parseJSON(data, new State(State.RECORD));
+                var request = Request.parseJSON(data);
                 callback(request)
         })
         .fail(function () {
             callback(null)
         });
+    }
+
+    setResponse(response, callback) {
+        $.ajax({
+            url: this.url + "/tape/" + response.parent + "/" + response.id,
+            type: 'POST',
+            crossDomain: true,
+            headers: {
+                "Accept": "application/json; charset=utf-8",
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            data: JSON.stringify(response),
+        }).done(function (data) {
+                var response = Response.parseJSON(data);
+                callback(response)
+            })
+            .fail(function () {
+                callback(null)
+            });
     }
 
 }

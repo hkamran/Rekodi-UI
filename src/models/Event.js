@@ -6,41 +6,31 @@ import {Response} from './Response';
 
 export class State {
 
-    constructor(val) {
-        this.state = val;
+    static valueOf(source) {
+
+        if (source.localeCompare("RECORD") == 0) {
+            return State.RECORD;
+        } else if (source.localeCompare("PROXY") == 0) {
+            return State.PROXY;
+        } else {
+            //(source.localeCompare("MOCK") == 0)
+            return State.MOCK;
+        }
     }
 
-    equals(obj) {
-        if (obj instanceof State) {
-            if (obj.state == this.state) {
-                return true;
-            }
-            return false;
-        }
+    static cmp(a, b) {
 
-        if (this.state == obj) {
+
+        if (a.localeCompare(b) == 0) {
             return true;
         }
         return false;
     }
-
-    static valueOf(source) {
-
-        if (source.localeCompare("RECORD") == 0) {
-            return new State(State.RECORD);
-        } else if (source.localeCompare("PROXY") == 0) {
-            return new State(State.PROXY);
-        } else if (source.localeCompare("MOCK") == 0) {
-            return new State(State.MOCK);
-        } else {
-            asdasdasdasdasd.asdasdasd;
-        }
-    }
 }
 
-State.RECORD = 1;
-State.PROXY = 2;
-State.MOCK = 3;
+State.RECORD = "RECORD";
+State.PROXY = "PROXY";
+State.MOCK = "MOCK";
 
 export class Event {
 
@@ -54,8 +44,8 @@ export class Event {
 
     static parseJSON(source, state) {
         var stateObj = State.valueOf(state);
-        var request = Request.parseJSON(source.request, stateObj);
-        var response = Response.parseJSON(source.response), stateObj;
+        var request = Request.parseJSON(source.request);
+        var response = Response.parseJSON(source.response);
         var duration = source.duration;
         var startTime = source.start;
 
