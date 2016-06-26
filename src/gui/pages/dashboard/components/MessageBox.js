@@ -15,8 +15,9 @@ export class MessageBox extends React.Component {
         super(props);
 
         this.state = {
-            message: props.message.clone(),
-            dirty: false
+            message: null,
+            dirty: false,
+            newKey: false
         }
         this.dom = {};
     }
@@ -29,6 +30,7 @@ export class MessageBox extends React.Component {
 
     componentWillReceiveProps(nextProps){
         if (nextProps.message == null) {
+            this.clear();
             return;
         }
 
@@ -40,6 +42,10 @@ export class MessageBox extends React.Component {
     componentDidUpdate() {
         var message = this.state.message;
 
+        if (!(message instanceof Response || message instanceof Request)) {
+            return;
+        }
+
         if (State.cmp(message.state, State.RECORD)) {
             this.editor.setOption("readOnly", false);
             this.dom.editor.css({"background":"#ffffff", "cursor": "auto"});
@@ -48,7 +54,19 @@ export class MessageBox extends React.Component {
             this.dom.editor.css({"background":"#fcfcfc", "cursor": "not-allowed"});
         }
 
+        if (this.state.newKey) {
+            var inputElem = ReactDOM.findDOMNode(this.refs.newKey);
+            inputElem.focus();
+        }
+
         this.editor.setValue(message.content);
+    }
+
+    clear() {
+        this.state.message = null;
+        this.editor.setValue("");
+        this.editor.setOption("readOnly", true);
+        this.dom.editor.css({"background":"#fcfcfc", "cursor": "not-allowed"});
     }
 
     dataChangeResponse(data) {
@@ -58,7 +76,6 @@ export class MessageBox extends React.Component {
             this.state.message.status = parseInt(data.status);
         }
 
-        this.setMessage(this.state.message);
         this.setDirty(true);
     }
 
@@ -71,7 +88,6 @@ export class MessageBox extends React.Component {
             this.state.message.uri = data.uri;
         }
 
-        this.setMessage(this.state.message);
         this.setDirty(true);
     }
 
@@ -79,7 +95,7 @@ export class MessageBox extends React.Component {
         Object.keys(data).map(function (key, i) {
             this.state.message.headers[key] = data[key];
         }.bind(this));
-        this.setMessage(this.state.message);
+
         this.setDirty(true);
     }
 
@@ -89,17 +105,23 @@ export class MessageBox extends React.Component {
             var oldKey = key;
 
             var value = this.state.message.headers[oldKey];
+            this.dataDeleteHeaderKey(key);
 
-            delete this.state.message.headers[oldKey];
+            if (!(typeof newKey === 'undefined' || newKey.length == 0)) {
+                this.state.message.headers[newKey] = value;
+            }
 
-            this.state.message.headers[newKey] = value;
         }.bind(this));
-        this.setMessage(this.state.message);
+
         this.setDirty(true);
     }
 
+    dataDeleteHeaderKey(key) {
+        delete this.state.message.headers[key];
+        this.setMessage(this.state.message);
+    }
+
     setMessage(message) {
-        console.log(message);
         this.setState({
             message: message
         });
@@ -109,6 +131,39 @@ export class MessageBox extends React.Component {
         this.setState({
             dirty: flag
         });
+    }
+
+
+    editingNewHeaderFinished() {
+        var inputElem = ReactDOM.findDOMNode(this.refs.newKey);
+        var value = inputElem.value;
+
+        this.setState({
+            newKey: false
+        })
+        if (typeof value === 'undefined' || value.length == 0) {
+            return;
+        } else {
+            this.state.message.headers[value] = " ";
+            this.setMessage(this.state.message);
+            inputElem.value = "";
+        }
+    }
+
+    editingNewHeaderShow() {
+        this.setState({
+            newKey: true
+        })
+    }
+
+    editingNewHeaderKey(event) {
+        if (event.keyCode ===  13) {
+            this.editingNewHeaderFinished();
+        } else if (event.keyCode === 27) {
+            this.setState({
+                newKey: false
+            })
+        }
     }
 
     render() {
@@ -131,8 +186,6 @@ export class MessageBox extends React.Component {
                         </div>
                         <div className="properties content">
                             <div className="properties wrapper">
-
-
                                 {
                                     (function () {
                                         var message = this.state.message;
@@ -185,19 +238,23 @@ export class MessageBox extends React.Component {
                                                         Object.keys(message.headers).sort().map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
+                                                                    <div className="properties close" onClick={this.dataDeleteHeaderKey.bind(this, key)}><i className="fa fa-times" /></div>
                                                                     <div className="properties title" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={key}
                                                                             paramName={key}
                                                                             change={this.dataChangeHeaderKey.bind(this)}
+                                                                            minLength={0}
                                                                         />:
                                                                     </div>
                                                                     <div className="properties value" style={{cursor: "text"}}>
                                                                         <InlineEdit
+                                                                            className="name"
                                                                             activeClassName="editing"
                                                                             text={message.headers[key] + ""}
                                                                             paramName={key}
+                                                                            minLength={0}
                                                                             change={this.dataChangeHeaderValue.bind(this)}
                                                                         />
                                                                     </div>
@@ -205,10 +262,24 @@ export class MessageBox extends React.Component {
                                                             )
                                                         }.bind(this))
                                                     }
+                                                    <li style={{display: (this.state.newKey ? "block" : "none")}}>
+                                                        <div className="properties title" style={{cursor: "text"}}>
+                                                            <input ref="newKey" className="editing"
+                                                                   onBlur={this.editingNewHeaderFinished.bind(this)}
+                                                                   onKeyDown={this.editingNewHeaderKey.bind(this)}
+                                                                   onReturn={this.editingNewHeaderFinished.bind(this)}
+                                                            />:
+                                                        </div>
+                                                        <div className="properties value" style={{cursor: "text"}}></div>
+                                                    </li>
+                                                    <li>
+                                                        <div className="properties add" onClick={this.editingNewHeaderShow.bind(this)}></div>
+                                                    </li>
                                                 </ul>
                                             )
-                                        } else {
+                                        } else if (message instanceof Request) {
                                             //(id, protocol, method, uri, content, matchType, matchString)
+
                                             return (
                                                 <ul>
                                                     <li>
@@ -248,19 +319,23 @@ export class MessageBox extends React.Component {
                                                         Object.keys(message.headers).sort().map(function (key, i) {
                                                             return (
                                                                 <li key={i}>
+                                                                    <div className="properties close" onClick={this.dataDeleteHeaderKey.bind(this, key)}><i className="fa fa-times" /></div>
                                                                     <div className="properties title" style={{cursor: "text"}}>
                                                                         <InlineEdit
                                                                             activeClassName="editing"
                                                                             text={key}
                                                                             paramName={key}
                                                                             change={this.dataChangeHeaderKey.bind(this)}
+                                                                            minLength={0}
                                                                         />:
                                                                     </div>
                                                                     <div className="properties value" style={{cursor: "text"}}>
                                                                         <InlineEdit
+                                                                            className="name"
                                                                             activeClassName="editing"
                                                                             text={message.headers[key] + ""}
                                                                             paramName={key}
+                                                                            minLength={0}
                                                                             change={this.dataChangeHeaderValue.bind(this)}
                                                                         />
                                                                     </div>
@@ -268,13 +343,25 @@ export class MessageBox extends React.Component {
                                                             )
                                                         }.bind(this))
                                                     }
+                                                    <li style={{display: (this.state.newKey ? "block" : "none")}}>
+                                                        <div className="properties title" style={{cursor: "text"}}>
+                                                            <input ref="newKey" className="editing"
+                                                                   onBlur={this.editingNewHeaderFinished.bind(this)}
+                                                                   onKeyDown={this.editingNewHeaderKey.bind(this)}
 
-                                                    <li style={{paddingTop: "10px"}}>
-                                                        <div className="properties title">Match Type:</div>
+                                                            />:
+                                                        </div>
+                                                        <div className="properties value" style={{cursor: "text"}}></div>
+                                                    </li>
+                                                    <li>
+                                                        <div className="properties add" onClick={this.editingNewHeaderShow.bind(this)}></div>
+                                                    </li>
+                                                    <li>
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Match Type:</div>
                                                         <div className="properties value">{message.matchType}</div>
                                                     </li>
                                                     <li>
-                                                        <div className="properties title">Match String:</div>
+                                                        <div className="properties title" style={{cursor: "not-allowed"}}>Match String:</div>
                                                         <div className="properties value">{message.matchString}</div>
                                                     </li>
                                                 </ul>
@@ -308,15 +395,6 @@ export class MessageBox extends React.Component {
         )
     }
 }
-
-MessageBox.propTypes = {
-    message: React.PropTypes.object.isRequired
-};
-
-MessageBox.defaultProps = {
-    message: new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), "")
-};
-
 
 var createTextEditor = function() {
     var mixedMode = {

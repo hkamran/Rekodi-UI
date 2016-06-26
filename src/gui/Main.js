@@ -22,7 +22,7 @@ export class Main extends React.Component {
         this.state = {
             proxy: "default",
             tape: new Tape(),
-            message:  new Response(-1, "", 100, "", {}, State.valueOf("PROXY"), ""),
+            message:  null,
             events: [],
             search: "",
             settings: new Settings(80,"", State.PROXY, true)
@@ -74,6 +74,15 @@ export class Main extends React.Component {
 
         }.bind(this));
 
+    }
+
+    clearTapeHandler() {
+        this.service.setTape(new Tape().getJSON(), function(tape) {
+            if (tape instanceof Tape) {
+                this.fetchTape();
+                this.state.message = null;
+            }
+        }.bind(this));
     }
 
     updateMessageHandler(message, editor) {
@@ -154,14 +163,26 @@ export class Main extends React.Component {
     }
 
     setMessageHandler(message) {
-
         if (message instanceof Response) {
             if (State.cmp(message.state, State.RECORD)) {
-                message = this.state.tape.getResponses(message.parent)[message.id];
+                if (this.state.tape.containsRequest(message.parent)) {
+                    var responses = this.state.tape.getResponses(message.parent);
+                    if (message.id > responses.length) {
+                        message = null;
+                    } else {
+                        message = responses[message.id];
+                    }
+                } else {
+                    message = null;
+                }
             }
         } else if (message instanceof Request) {
             if (State.cmp(message.state, State.RECORD)) {
-                message = this.state.tape.getRequest(message.id);
+                if (this.state.tape.containsRequest(message.id)) {
+                    message = this.state.tape.getRequest(message.id);
+                } else {
+                    message = null;
+                }
             }
         }
 
@@ -198,6 +219,7 @@ export class Main extends React.Component {
                                        setMessageHandler={this.setMessageHandler.bind(this)}
                                        setSearchHandler={this.setSearchHandler.bind(this)}
                                        updateMessageHandler={this.updateMessageHandler.bind(this)}
+                                       clearTapeHandler={this.clearTapeHandler.bind(this)}
                             />
                         </div>
                     </div>

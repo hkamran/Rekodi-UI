@@ -118,6 +118,7 @@
     width: 100%;
     white-space: normal;
     padding: 10px;
+    padding-left: 12px;
     box-sizing: border-box;
 }
 
@@ -131,12 +132,43 @@
 
 }
 
+.properties .value .name {
+    min-width: 100px;
+    height: 14px;
+    display: block;
+}
+
 .properties ul li {
     display: inline-block;
     clear: left;
     float: left;
     margin-bottom: 1px;
     white-space: nowrap;
+}
+
+.properties ul li .properties.close {
+    display: block;
+    position: absolute;
+    left: 4px;
+    width: 15px;
+    height: 20px;
+    cursor: pointer;
+    padding-top: 1px;
+}
+
+.properties.close:hover i {
+    display: block;
+    color: #cd3737;
+}
+
+.properties.close i {
+    display: none;
+}
+
+.properties.add {
+    cursor: copy;
+    height: 10px;
+    width: 200px;
 }
 
 .properties .title {

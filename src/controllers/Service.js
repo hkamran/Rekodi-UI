@@ -96,6 +96,25 @@ export class Service {
         });
     }
 
+    setTape(tape, callback) {
+        $.ajax({
+            url: this.url + "/tape/",
+            type: 'POST',
+            crossDomain: true,
+            headers: {
+                "Accept": "application/json; charset=utf-8",
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            data: JSON.stringify(tape),
+        }).done(function (data) {
+                var tape = Tape.parseJSON(data);
+                callback(tape)
+        })
+        .fail(function () {
+            callback(null)
+        });
+    }
+
     setRequest(request, callback) {
         $.ajax({
             url: this.url + "/tape/" + request.id,

@@ -18,8 +18,13 @@ export class Dashboard extends React.Component {
         return (
             <div className="grow width height">
                 <div id="analysisContainer" style={{height: "calc(50% - 5px)"}}>
-                    <TapeBox tape={this.props.tape} message={this.props.message} search={this.props.search} setSearchHandler={this.props.setSearchHandler} setMessageHandler={this.props.setMessageHandler} />
-
+                    <TapeBox tape={this.props.tape}
+                             message={this.props.message}
+                             search={this.props.search}
+                             clearTapeHandler={this.props.clearTapeHandler}
+                             setSearchHandler={this.props.setSearchHandler}
+                             setMessageHandler={this.props.setMessageHandler}
+                    />
                     <div id="analysisSplitter" className="splitter horizontal">
                         <div className="splitter horizontal grabber"></div>
                     </div>

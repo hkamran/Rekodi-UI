@@ -94,4 +94,8 @@ export class Tape {
         console.info("Tape loaded successfully!");
         return tape;
     }
+
+    getJSON() {
+        return this.requests;
+    }
 }
