@@ -167,17 +167,17 @@ export class MessageBox extends React.Component {
     }
 
     render() {
-
         return (
-
             <div id="messageContainer" className="box">
-
                 <div className="header">
                     <div className="item left border">Message</div>
-
-                    <div className="item right border"><i className="fa fa-code" aria-hidden="true" /></div>
-                    <div className="item right border" onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)} ><i className="fa fa-floppy-o" aria-hidden="true" /></div>
-
+                    <div className="item right border"
+                         title="Save"
+                         onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)} >
+                        <svg style={{width:"16px", height:"16px", marginTop: "7px" }} viewBox="0 0 24 24">
+                            <path fill="#696969" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+                        </svg>
+                    </div>
                 </div>
                 <div className="body min">
                     <div id="headerContainer" className="column" style={{width: "calc(50% - 0.5px)"}}>
