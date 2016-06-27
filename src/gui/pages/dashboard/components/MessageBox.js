@@ -25,7 +25,7 @@ export class MessageBox extends React.Component {
     componentDidMount() {
         this.editor = createTextEditor();
         this.dom.editor = $('.CodeMirror ');
-        this.dom.editor.css({"background":"#fcfcfc"});
+        this.clear();
     }
 
     componentWillReceiveProps(nextProps){
@@ -214,10 +214,16 @@ export class MessageBox extends React.Component {
                                                             {
                                                                 (function() {
                                                                     var color;
-                                                                    if (message.status == 100) {
+                                                                    if (message.status < 200) {
                                                                         color = "#dedede";
-                                                                    } else {
+                                                                    } else if (message.status < 300) {
                                                                         color = "#7fcb1d";
+                                                                    } else if (message.status < 400) {
+                                                                        color = "#3383ff";
+                                                                    } else if (message.status < 500) {
+                                                                        color = "#e67e22 ";
+                                                                    } else {
+                                                                        color = "#cd3737";
                                                                     }
 
                                                                     return (
@@ -304,7 +310,7 @@ export class MessageBox extends React.Component {
                                                             />
                                                         </div>
                                                     </li>
-                                                    <li style={{paddingBottom: "10px"}}>
+                                                    <li>
                                                         <div className="properties title" style={{cursor: "not-allowed"}}>URI:</div>
                                                         <div className="properties value" style={{cursor: "text"}}>
                                                             <InlineEdit
@@ -317,8 +323,13 @@ export class MessageBox extends React.Component {
                                                     </li>
                                                     {
                                                         Object.keys(message.headers).sort().map(function (key, i) {
+                                                            if (i == 0) {
+                                                                var style = {
+                                                                    paddingTop: "10px"
+                                                                };
+                                                            }
                                                             return (
-                                                                <li key={i}>
+                                                                <li key={i} style={style}>
                                                                     <div className="properties close" onClick={this.dataDeleteHeaderKey.bind(this, key)}><i className="fa fa-times" /></div>
                                                                     <div className="properties title" style={{cursor: "text"}}>
                                                                         <InlineEdit
