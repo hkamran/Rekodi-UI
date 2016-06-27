@@ -119,6 +119,7 @@ export class MessageBox extends React.Component {
     dataDeleteHeaderKey(key) {
         delete this.state.message.headers[key];
         this.setMessage(this.state.message);
+        this.setDirty(true);
     }
 
     setMessage(message) {
@@ -132,7 +133,6 @@ export class MessageBox extends React.Component {
             dirty: flag
         });
     }
-
 
     editingNewHeaderFinished() {
         var inputElem = ReactDOM.findDOMNode(this.refs.newKey);
@@ -148,6 +148,7 @@ export class MessageBox extends React.Component {
             this.setMessage(this.state.message);
             inputElem.value = "";
         }
+        this.setDirty(true);
     }
 
     editingNewHeaderShow() {
@@ -167,16 +168,22 @@ export class MessageBox extends React.Component {
     }
 
     render() {
+        var saveStyle = {};
+        if (this.state.dirty) {
+            saveStyle["borderBottom"] = "1px dotted #696969";
+            saveStyle["paddingBottom"] = "2px";
+        }
+
         return (
             <div id="messageContainer" className="box">
                 <div className="header">
                     <div className="item left border">Message</div>
                     <div className="item right border"
                          title="Save"
-                         onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)} >
-                        <svg style={{width:"16px", height:"16px", marginTop: "7px" }} viewBox="0 0 24 24">
-                            <path fill="#696969" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
-                        </svg>
+                         onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)}
+                         style={{fontSize: "11.4pt"}}
+                        >
+                        <i className="fa fa-floppy-o" aria-hidden="true" style={saveStyle} />
                     </div>
                 </div>
                 <div className="body min">
@@ -423,11 +430,11 @@ var createTextEditor = function() {
     var editor = CodeMirror.fromTextArea(document.getElementById("content"), {
         matchBrackets: true,
         autoCloseBrackets: true,
-
         lineWrapping: false,
         lineNumbers: true,
         mode: "xmlAndJsonMode",
-        fixedGutter: true,
+        fixedGutter: true
     });
+
     return editor;
 }
