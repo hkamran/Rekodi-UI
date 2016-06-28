@@ -12,9 +12,13 @@ import $ from 'jquery';
 
 export class Service {
 
-    constructor(url) {
-        this.url = url;
-        this.api = restful(url, fetchBackend(fetch));
+    constructor(home) {
+        this.base = home;
+    }
+
+    setFilter(name) {
+        this.url = this.base + "/" + name;
+        this.api = restful(this.url, fetchBackend(fetch));
     }
 
     getTape(callback) {

@@ -28,7 +28,10 @@ export class Main extends React.Component {
             settings: new Settings(80,"", State.PROXY, true)
         };
 
-        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
+        this.restURL = "http://" + location.host + "/rest";
+        //this.restURL = "http://localhost:8090/rest";
+        this.service = new Service(this.restURL);
+        this.service.setFilter(this.state.proxy);
     }
 
     componentDidMount() {
