@@ -45,8 +45,8 @@ export class EventBox extends React.Component {
                                 <TransitionGroup id="eventContent" component="tbody" transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
                                     {
 
-                                        this.props.events.map(function(event, i, props) {
-
+                                        Object.keys(this.props.events).sort().map(function(id, i, props) {
+                                            var event = this.props.events[id];
                                             var request = event.request;
                                             var response = event.response;
 
@@ -60,9 +60,23 @@ export class EventBox extends React.Component {
                                                         </span>
                                                     </td>
                                                     <td style={{width: "1%", minWidth: "120px"}}>
-                                                        <span onClick={this.props.setMessageHandler.bind(this, response)}  className="http label button">
-                                                            {response.hashCode}
-                                                        </span>
+                                                        {(function() {
+                                                            if (response != null) {
+
+                                                                return (
+                                                                    <span onClick={this.props.setMessageHandler.bind(this, response)} className="http label button">
+                                                                        {response.hashCode}
+                                                                    </span>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                    <span className="http label button">
+                                                                        ...
+                                                                    </span>
+                                                                )
+                                                            }
+                                                        }.bind(this))()}
+
                                                     </td>
                                                     <td style={{width: "1%", minWidth: "100px", maxWidth: "100px"}}>{event.duration}ms</td>
                                                 </tr>

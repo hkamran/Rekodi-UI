@@ -71,28 +71,32 @@ export class Tape {
     }
 
     static parseJSON(source) {
-        console.info("Loading Tape...");
-        var keys = Object.getOwnPropertyNames(source);
+        try {
+            console.info("Loading Tape...");
 
-        var tape = new Tape();
-        for (var i = 0; i < keys.length; i++) {
-            var key = keys[i];
+            var keys = Object.getOwnPropertyNames(source);
+            var tape = new Tape();
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
 
-            var dataObj = source[key];
-            var request = Request.parseJSON(dataObj.request, new State(State.RECORD));
-            var responses = dataObj.responses;
+                var dataObj = source[key];
+                var request = Request.parseJSON(dataObj.request, new State(State.RECORD));
+                var responses = dataObj.responses;
 
-            tape.addRequest(request);
-            for (var x = 0; x < responses.length; x++) {
-                var responseData = dataObj.responses[x];
-                var response = Response.parseJSON(responseData, new State(State.RECORD));
-                tape.addResponse(request.id, response);
+                tape.addRequest(request);
+                for (var x = 0; x < responses.length; x++) {
+                    var responseData = dataObj.responses[x];
+                    var response = Response.parseJSON(responseData, new State(State.RECORD));
+                    tape.addResponse(request.id, response);
 
+                }
             }
-        }
 
-        console.info("Tape loaded successfully!");
-        return tape;
+            console.info("Tape loaded successfully!");
+            return tape;
+        } catch (err) {
+            console.error("Unable to parse tape ", source);
+        }
     }
 
     getJSON() {

@@ -13,6 +13,8 @@ import {Response} from '../models/Response';
 import {Settings} from '../models/Settings';
 import {Event, State} from '../models/Event';
 import {Tape} from '../models/Tape';
+import {Socket} from '../controllers/Socket';
+import {Payload} from '../controllers/models/Payload';
 
 export class Main extends React.Component {
 
@@ -23,44 +25,61 @@ export class Main extends React.Component {
             proxy: "default",
             tape: new Tape(),
             message:  null,
-            events: [],
+            events: {},
             search: "",
             settings: new Settings(80,"", State.PROXY, true)
         };
 
-        this.restURL = "http://" + location.host + "/rest";
-        //this.restURL = "http://localhost:8090/rest";
-        this.service = new Service(this.restURL);
-        this.service.setFilter(this.state.proxy);
+        this.socket = new Socket("ws://localhost:8090/ws/");
     }
 
     componentDidMount() {
-        this.fetchTape();
-        this.fetchEvents();
-        this.fetchSettings();
-        setInterval(function () {
-            this.fetchEvents();
-        }.bind(this), 1000);
+        this.socket.setHandlerForTapeUpdate(this.handleTapeUpdate.bind(this));
+        this.socket.setHandlerForSettingsUpdate(this.handleSettingsUpdate.bind(this));
+        this.socket.setHandlerForEventUpdate(this.handleEventUpdate.bind(this));
+        this.socket.setHandlerForResponseUpdate(this.handleResponseUpdate.bind(this));
+        this.socket.setHandlerForRequestUpdate(this.handleRequestUpdate.bind(this));
+        this.socket.start();
     }
 
-
-    fetchTape() {
-        this.service.getTape(function(tape){
-            this.setTapeHandler(tape);
-        }.bind(this));
+    handleTapeUpdate(obj) {
+        if (obj instanceof Tape) {
+            this.setTapeHandler(obj);
+        }
     }
 
-    fetchSettings() {
-        this.service.getSettings(function(settings){
-            this.setSettingsHandler(settings);
-        }.bind(this));
+    handleSettingsUpdate(obj) {
+        if (obj instanceof Settings) {
+            this.setSettingsHandler(obj);
+        }
     }
 
-    fetchEvents() {
-        this.service.getEvents(function(event) {
+    handleRequestUpdate(obj) {
+        var request = obj;
+        if (request instanceof Request) {
+            var original = this.state.message;
+            if (original.id == request.pastID) {
+                this.setMessageHandler(request);
+            }
+        }
+    }
+
+    handleResponseUpdate(obj) {
+        var response = obj;
+        if (response instanceof Response) {
+            var original = this.state.message;
+            if (original.parent == response.parent && original.id == response.id) {
+                this.setMessageHandler(response);
+            }
+        }
+    }
+
+    handleEventUpdate(obj) {
+        if (obj instanceof Event) {
+            var event = obj;
+            console.log(event);
             var request = event.request;
             var response = event.response;
-
 
             if (this.state.tape.containsRequest(request.id)) {
                 request = this.state.tape.getRequest(request.id);
@@ -68,46 +87,32 @@ export class Main extends React.Component {
             }
 
             if (State.cmp(event.state, State.RECORD)) {
-                this.state.tape.addRequest(request);
-                this.state.tape.addResponse(request.id, response);
+                if (response != null) {
+                    this.state.tape.addRequest(request);
+                    this.state.tape.addResponse(request.id, response);
+                }
             }
 
-            this.state.events.push(event);
+            this.state.events[event.id] = event;
             this.refreshState();
-
-        }.bind(this));
-
+        }
     }
 
     clearTapeHandler() {
-        this.service.setTape(new Tape().getJSON(), function(tape) {
-            if (tape instanceof Tape) {
-                this.fetchTape();
-                this.state.message = null;
-            }
-        }.bind(this));
+        var payload = new Payload(Payload.types.TAPE, new Tape().getJSON());
+        this.socket.send(payload);
     }
 
     updateMessageHandler(message, editor) {
         var content = editor.getValue();
         if (message instanceof Request) {
             message.content = content;
-            this.service.setRequest(message, function(request) {
-                if (request instanceof Request) {
-                    this.state.tape.setRequest(this.state.message.id, request);
-                    this.state.message.id = request.id;
-                    this.setMessageHandler(request);
-                }
-            }.bind(this));
+            var payload = new Payload(Payload.types.REQUEST, message);
+            this.socket.send(payload);
         } else if (message instanceof Response) {
             message.content = content;
-            this.service.setResponse(message, function(response) {
-                if (response instanceof Response) {
-                    this.state.message.hashCode = response.hashCode;
-                    this.state.tape.getResponses(this.state.message.parent)[this.state.message.id] = response;
-                    this.setMessageHandler(response);
-                }
-            }.bind(this));
+            var payload = new Payload(Payload.types.RESPONSE, message);
+            this.socket.send(payload)
         }
     }
 
@@ -122,9 +127,8 @@ export class Main extends React.Component {
             settings.state = State.PROXY;
         }
 
-        this.service.setSettings(settings, function() {
-            this.fetchSettings();
-        }.bind(this));
+        var payload = new Payload(Payload.types.SETTINGS, settings);
+        this.socket.send(payload);
     }
 
     toggleRedirectHandler() {
@@ -135,9 +139,8 @@ export class Main extends React.Component {
             settings.redirect = true;
         }
 
-        this.service.setSettings(settings, function() {
-            this.fetchSettings();
-        }.bind(this));
+        var payload = new Payload(Payload.types.SETTINGS, settings);
+        this.socket.send(payload);
     }
 
     setTapeHandler(tape) {
@@ -162,33 +165,9 @@ export class Main extends React.Component {
         this.setState({
             proxy: proxyName
         });
-        this.service = new Service("http://127.0.0.1:7090/rest/" + this.state.proxy);
     }
 
     setMessageHandler(message) {
-        if (message instanceof Response) {
-            if (State.cmp(message.state, State.RECORD)) {
-                if (this.state.tape.containsRequest(message.parent)) {
-                    var responses = this.state.tape.getResponses(message.parent);
-                    if (message.id > responses.length) {
-                        message = null;
-                    } else {
-                        message = responses[message.id];
-                    }
-                } else {
-                    message = null;
-                }
-            }
-        } else if (message instanceof Request) {
-            if (State.cmp(message.state, State.RECORD)) {
-                if (this.state.tape.containsRequest(message.id)) {
-                    message = this.state.tape.getRequest(message.id);
-                } else {
-                    message = null;
-                }
-            }
-        }
-
         this.setState({
             message: message
         });

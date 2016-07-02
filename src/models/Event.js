@@ -34,7 +34,8 @@ State.MOCK = "MOCK";
 
 export class Event {
 
-    constructor(request, response, startTime, duration, state) {
+    constructor(id, request, response, startTime, duration, state) {
+        this.id = id;
         this.request = request;
         this.response = response;
         this.startTime = startTime;
@@ -42,13 +43,18 @@ export class Event {
         this.state = state;
     }
 
-    static parseJSON(source, state) {
-        var stateObj = State.valueOf(state);
+    static parseJSON(source) {
+        console.log(source);
+        var id = source.id;
+        var stateObj = State.valueOf(source.state);
         var request = Request.parseJSON(source.request);
-        var response = Response.parseJSON(source.response);
+        var response = null;
+        if (Object.keys(source.response).length > 0) {
+            response = Response.parseJSON(source.response);
+        }
         var duration = source.duration;
         var startTime = source.start;
 
-        return new Event(request, response, startTime, duration, stateObj);
+        return new Event(id, request, response, startTime, duration, stateObj);
     }
 }

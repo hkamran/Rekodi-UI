@@ -5,7 +5,7 @@ import React from 'react';
 import {render} from 'react-dom';
 
 export class Request {
-    constructor(id, protocol, method, uri, content, headers, state, matchType, matchString) {
+    constructor(id, protocol, method, uri, content, headers, state, pastID, matchType, matchString) {
         this.id = id;
         this.protocol = protocol;
         this.method = method;
@@ -15,6 +15,7 @@ export class Request {
         this.state = state;
         this.matchString = matchString;
         this.headers = headers;
+        this.pastID = pastID;
     }
 
     static parseJSON(source) {
@@ -27,8 +28,9 @@ export class Request {
         var state = source["state"];
         var matchType = source["matchType"];
         var matchString = source["matchString"];
+        var pastID = source["pastID"];
 
-        return new Request(id, protocol, method, uri, content, headers, state, matchType, matchString);
+        return new Request(id, protocol, method, uri, content, headers, state, pastID, matchType, matchString);
     }
 
     clone() {
@@ -44,6 +46,7 @@ export class Request {
             this.content,
             headers,
             this.state,
+            this.pastID,
             this.matchType,
             this.matchString);
     }

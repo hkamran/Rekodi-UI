@@ -12,15 +12,21 @@ export class Settings {
     }
 
     static parseJSON(source) {
-        console.info("Loading Settings...");
+        try {
+            console.info("Loading Settings...");
 
-        var host = source["host"];
-        var port = source["port"];
-        var state = State.valueOf(source["proxy"]);
-        var redirect = source["state"];
+            var host = source["host"];
+            var port = source["port"];
+            var state = State.valueOf(source["state"]);
+            var redirect = source["redirect"];
 
-        console.info("Settings loaded successfully!");
-        return new Settings(port, host, state, redirect);
+            console.info("Settings loaded successfully!");
+
+            return new Settings(port, host, state, redirect);
+
+        } catch (err) {
+            console.error("Unable to parse settings ", source);
+        }
     }
 
     clone() {
