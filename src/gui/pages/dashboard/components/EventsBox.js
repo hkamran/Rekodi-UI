@@ -27,7 +27,7 @@ export class EventBox extends React.Component {
             <div id="eventsContainer" style={{height: "calc(50% - 5px)"}} className="box">
                 <div className="header">
                     <div className="item left border">Events</div>
-                    <div className="item right border"><i className="fa fa-eraser" aria-hidden="true"></i></div>
+                    <div className="item right border" onClick={this.props.setEventsHandler.bind(this, {})}><i className="fa fa-eraser" aria-hidden="true" /></div>
                 </div>
                 <div className="body min">
                     <div  className="column grow width">
@@ -50,21 +50,23 @@ export class EventBox extends React.Component {
                                             var request = event.request;
                                             var response = event.response;
 
+                                            var isMessage = event.request.equals(this.props.message);
+
                                             return (
                                                 <tr key={i} style={{height: "1%"}}>
                                                     <td style={{width: "1%", minWidth: "70px"}}>{event.startTime}</td>
                                                     <td style={{width: "50%"}}>Incoming Request: <span className="http method">{request.method}</span> <span className="http uri">{request.uri}</span></td>
                                                     <td style={{width: "1%", minWidth: "120px"}}>
-                                                        <span onClick={this.props.setMessageHandler.bind(this, request)} className="http label button">
+                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} className="http label button">
                                                             {request.id}
                                                         </span>
                                                     </td>
                                                     <td style={{width: "1%", minWidth: "120px"}}>
                                                         {(function() {
                                                             if (response != null) {
-
+                                                                var isMessage = response.equals(this.props.message);
                                                                 return (
-                                                                    <span onClick={this.props.setMessageHandler.bind(this, response)} className="http label button">
+                                                                    <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)} className="http label button">
                                                                         {response.hashCode}
                                                                     </span>
                                                                 )

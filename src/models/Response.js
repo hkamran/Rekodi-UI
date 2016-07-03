@@ -29,6 +29,17 @@ export class Response {
         return new Response(id, protocol, status, content, headers, state, parent, hashCode);
     }
 
+    equals(msg) {
+        if (msg instanceof Response) {
+            if (msg.id == this.id) {
+                if (msg.parent == this.parent) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     clone() {
         var headers = {};
         Object.keys(this.headers).map(function(key, i) {

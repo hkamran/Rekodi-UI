@@ -73,30 +73,24 @@ export class TapeBox extends React.Component {
                                         var request = this.props.tape.getRequest(id);
                                         var responses = this.props.tape.getResponses(id);
 
+                                        var isMessage = request.equals(this.props.message);
+
                                         return (
                                             <ul key={i} className="incoming">
                                                 <li>
-                                                    <div className={this.props.message != null && this.props.message.id === request.id ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
+                                                    <div className={isMessage ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
                                                         <i className="fa fa-caret-down" aria-hidden="true" style={{padding: "6px"}} />
-                                                        <span onClick={this.props.setMessageHandler.bind(this, request)}>Request: {request.id}</span>
+                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)}>Request: {request.id}</span>
                                                     </div>
                                                     <ul>
                                                         {
                                                             responses.map(function(response, i) {
-
-                                                                var isResponse = false;
-                                                                var isMessage = false;
-                                                                if (this.props.message != null ) {
-                                                                    isResponse = this.props.message instanceof Response;
-                                                                    if (isResponse && this.props.message.hashCode === response.hashCode) {
-                                                                        isMessage = true;
-                                                                    }
-                                                                }
+                                                                var isMessage = response.equals(this.props.message);
 
                                                                 return (
                                                                     <li key={i} className="message">
                                                                         <div className={isMessage ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
-                                                                            <span onClick={this.props.setMessageHandler.bind(this, response)}
+                                                                            <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)}
                                                                                   style={{marginLeft: "6px"}}>Response: {response.id}</span>
                                                                         </div>
                                                                     </li>

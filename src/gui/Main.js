@@ -101,19 +101,22 @@ export class Main extends React.Component {
     clearTapeHandler() {
         var payload = new Payload(Payload.types.TAPE, new Tape().getJSON());
         this.socket.send(payload);
+        this.setMessageHandler(null);
     }
 
-    updateMessageHandler(message, editor) {
-        var content = editor.getValue();
+    updateMessageHandler(message) {
         if (message instanceof Request) {
-            message.content = content;
             var payload = new Payload(Payload.types.REQUEST, message);
             this.socket.send(payload);
         } else if (message instanceof Response) {
-            message.content = content;
             var payload = new Payload(Payload.types.RESPONSE, message);
             this.socket.send(payload)
         }
+    }
+
+    updateSettingsHandler(settings) {
+        var payload = new Payload(Payload.types.SETTINGS, settings);
+        this.socket.send(payload);
     }
 
     toggleStateHandler() {
@@ -173,6 +176,12 @@ export class Main extends React.Component {
         });
     }
 
+    setEventsHandler(events) {
+        this.setState({
+            events: events
+        });
+    }
+
 
     refreshState() {
         this.setState({
@@ -191,7 +200,10 @@ export class Main extends React.Component {
                 <div className="main">
                     <Subnav settings={this.state.settings}
                             toggleStateHandler={this.toggleStateHandler.bind(this)}
-                            toggleRedirectHandler={this.toggleRedirectHandler.bind(this)}/>
+                            toggleRedirectHandler={this.toggleRedirectHandler.bind(this)}
+                            tape={this.state.tape}
+                            updateSettingsHandler={this.updateSettingsHandler.bind(this)}
+                    />
                     <div className="container">
                         <div className="content ">
                             <Dashboard tape={this.state.tape}
@@ -200,6 +212,7 @@ export class Main extends React.Component {
                                        search={this.state.search}
                                        setMessageHandler={this.setMessageHandler.bind(this)}
                                        setSearchHandler={this.setSearchHandler.bind(this)}
+                                       setEventsHandler={this.setEventsHandler.bind(this)}
                                        updateMessageHandler={this.updateMessageHandler.bind(this)}
                                        clearTapeHandler={this.clearTapeHandler.bind(this)}
                             />

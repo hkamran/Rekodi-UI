@@ -13,6 +13,25 @@ import {Response} from '../../../models/Response';
 
 export class Dashboard extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            resetMessageHandler : function () {
+
+            }
+        }
+    }
+
+    setResetMessageHandler(handle) {
+        this.setState({
+            resetMessageHandler : handle
+        })
+    }
+
+    resetMessageHandler() {
+        this.state.resetMessageHandler();
+    }
 
     render() {
         return (
@@ -24,12 +43,17 @@ export class Dashboard extends React.Component {
                              clearTapeHandler={this.props.clearTapeHandler}
                              setSearchHandler={this.props.setSearchHandler}
                              setMessageHandler={this.props.setMessageHandler}
+                             resetMessageHandler={this.resetMessageHandler.bind(this)}
                     />
                     <div id="analysisSplitter" className="splitter horizontal">
                         <div className="splitter horizontal grabber"></div>
                     </div>
 
-                    <MessageBox message={this.props.message} updateMessageHandler={this.props.updateMessageHandler} />
+                    <MessageBox
+                        message={this.props.message}
+                        updateMessageHandler={this.props.updateMessageHandler}
+                        setResetMessageHandler={this.setResetMessageHandler.bind(this)}
+                    />
                 </div>
 
                 <div id="contentSplitter">
@@ -38,7 +62,12 @@ export class Dashboard extends React.Component {
                     </div>
                 </div>
 
-                <EventBox events={this.props.events} setMessageHandler={this.props.setMessageHandler} />
+                <EventBox events={this.props.events}
+                          message={this.props.message}
+                          setMessageHandler={this.props.setMessageHandler}
+                          setEventsHandler={this.props.setEventsHandler}
+                          resetMessageHandler={this.resetMessageHandler.bind(this)}
+                />
             </div>
         )
     }

@@ -17,7 +17,8 @@ export class MessageBox extends React.Component {
         this.state = {
             message: null,
             dirty: false,
-            newKey: false
+            newKey: false,
+            viewChange: false
         }
         this.dom = {};
     }
@@ -25,6 +26,22 @@ export class MessageBox extends React.Component {
     componentDidMount() {
         this.editor = createTextEditor();
         this.dom.editor = $('.CodeMirror ');
+
+        this.editor.on('change',function(cMirror){
+            if (!this.state.dirty) {
+                if (this.editor.getValue() !== this.state.message.content) {
+                    this.setDirty(true);
+                }
+            }
+        }.bind(this));
+
+        this.editor.on('scroll', function(cMirror) {
+            if (!this.state.viewChange) {
+                this.setViewChange(true);
+            }
+        }.bind(this));
+
+        this.props.setResetMessageHandler(this.resetMessage.bind(this));
         this.clear();
     }
 
@@ -33,10 +50,15 @@ export class MessageBox extends React.Component {
             this.clear();
             return;
         }
-
-        var message = nextProps.message.clone();
-        this.setDirty(false);
-        this.setMessage(message);
+        if (nextProps.message.equals(this.state.message)) {
+            return;
+        } else {
+            var message = nextProps.message.clone();
+            this.editor.scrollTo(0, 0);
+            this.setDirty(false);
+            this.setViewChange(false);
+            this.setMessage(message);
+        }
     }
 
     componentDidUpdate() {
@@ -59,7 +81,9 @@ export class MessageBox extends React.Component {
             inputElem.focus();
         }
 
-        this.editor.setValue(message.content);
+        if (!this.state.dirty && !this.state.viewChange) {
+            this.editor.setValue(message.content);
+        }
     }
 
     clear() {
@@ -128,6 +152,12 @@ export class MessageBox extends React.Component {
         });
     }
 
+    setViewChange(flag) {
+        this.setState({
+            viewChange: flag
+        });
+    }
+
     setDirty(flag) {
         this.setState({
             dirty: flag
@@ -167,6 +197,23 @@ export class MessageBox extends React.Component {
         }
     }
 
+    resetMessage() {
+        if (this.props.message == null) {
+            return;
+        }
+        var message = this.props.message.clone();
+        this.editor.scrollTo(0, 0);
+        this.setDirty(false);
+        this.setViewChange(false);
+        this.setMessage(message);
+    }
+
+    updateMessage() {
+        var message = this.state.message;
+        message.content = this.editor.getValue();
+        this.props.updateMessageHandler(message);
+    }
+
     render() {
         var saveStyle = {};
         if (this.state.dirty) {
@@ -180,11 +227,20 @@ export class MessageBox extends React.Component {
                     <div className="item left border">Message</div>
                     <div className="item right border"
                          title="Save"
-                         onClick={this.props.updateMessageHandler.bind(this, this.state.message, this.editor)}
+                         onClick={this.updateMessage.bind(this)}
                          style={{fontSize: "11.4pt"}}
                         >
                         <i className="fa fa-floppy-o" aria-hidden="true" style={saveStyle} />
                     </div>
+                    <div className="item right border"
+                         title="Save"
+                         onClick={this.resetMessage.bind(this)}
+                         style={{fontSize: "11.4pt"}}
+                    >
+                        <i className="fa fa-refresh" />
+                    </div>
+
+
                 </div>
                 <div className="body min">
                     <div id="headerContainer" className="column" style={{width: "calc(50% - 0.5px)"}}>
@@ -435,6 +491,7 @@ var createTextEditor = function() {
         mode: "xmlAndJsonMode",
         fixedGutter: true
     });
+
 
     return editor;
 }

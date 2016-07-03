@@ -33,6 +33,15 @@ export class Request {
         return new Request(id, protocol, method, uri, content, headers, state, pastID, matchType, matchString);
     }
 
+    equals(msg) {
+        if (msg instanceof Request) {
+            if (msg.id == this.id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     clone() {
         var headers = {};
         Object.keys(this.headers).map(function(key, i) {
