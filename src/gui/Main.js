@@ -29,8 +29,9 @@ export class Main extends React.Component {
             search: "",
             settings: new Settings(80,"", State.PROXY, true)
         };
-
-        this.socket = new Socket("ws://localhost:8090/ws/");
+        //var url = this.restURL = "http://" + location.host + "/rest";
+        //this.socket = new Socket("ws://localhost:8090/ws/");
+        this.socket = new Socket("ws://" + location.host + "/ws/");
     }
 
     componentDidMount() {
