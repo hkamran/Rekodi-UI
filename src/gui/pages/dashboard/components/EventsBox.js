@@ -17,7 +17,7 @@ export class EventBox extends React.Component {
     }
 
     autoScroll() {
-        var element = document.getElementById("eventContent");
+        var element = document.getElementById("tBodyContainer");
         element.scrollTop = element.scrollHeight + 20;
     }
 
