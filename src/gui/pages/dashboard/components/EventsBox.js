@@ -32,63 +32,74 @@ export class EventBox extends React.Component {
                 <div className="body min">
                     <div  className="column grow width">
                         <div id="eventWrapper" className="content max" >
-                            <table id="eventTable" cellPadding ="8" cellSpacing ="0" style={{height: "100%"}}>
-                                <thead>
-                                <tr>
-                                    <th style={{width: "1%", minWidth: "70px"}}>Time</th>
-                                    <th style={{width: "50%"}}>Description</th>
-                                    <th style={{width: "1%", minWidth: "120px"}}>Request</th>
-                                    <th style={{width: "1%", minWidth: "120px"}}>Response</th>
-                                    <th style={{width: "1%", minWidth: "117px", borderRight: "0px"}}>Duration</th>
-                                </tr>
-                                </thead>
-                                <TransitionGroup id="eventContent" component="tbody" transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                                    {
+                            <div id="scrollTableContainer">
+                                <div id="tHeadContainer">
+                                    <table id="tHead" cellPadding ="8" cellSpacing ="0" style={{height: "100%"}}>
+                                        <tr>
+                                            <td>Time</td>
+                                            <td>Description</td>
+                                            <td>Request</td>
+                                            <td>Response</td>
+                                            <td>Duration</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div id="tBodyContainer">
 
-                                        Object.keys(this.props.events).sort().map(function(id, i, props) {
-                                            var event = this.props.events[id];
-                                            var request = event.request;
-                                            var response = event.response;
+                                    <TransitionGroup id="tBody" style={{height: "100%"}} cellSpacing ="0" component="table" transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+                                        {
 
-                                            var isMessage = event.request.equals(this.props.message);
+                                            Object.keys(this.props.events).sort().map(function(id, i, props) {
+                                                var event = this.props.events[id];
+                                                var request = event.request;
+                                                var response = event.response;
 
-                                            return (
-                                                <tr key={i} style={{height: "1%"}}>
-                                                    <td style={{width: "1%", minWidth: "70px"}}>{event.startTime}</td>
-                                                    <td style={{width: "50%"}}>Incoming Request: <span className="http method">{request.method}</span> <span className="http uri">{request.uri}</span></td>
-                                                    <td style={{width: "1%", minWidth: "120px"}}>
-                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} className="http label button">
-                                                            {request.id}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{width: "1%", minWidth: "120px"}}>
-                                                        {(function() {
-                                                            if (response != null) {
-                                                                var isMessage = response.equals(this.props.message);
-                                                                return (
-                                                                    <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)} className="http label button">
+                                                var isMessage = event.request.equals(this.props.message);
+
+                                                return (
+                                                    <tr key={i} style={{height: "1%"}}>
+                                                        <td>{event.startTime}</td>
+                                                        <td>Incoming Request: <span className="http method">{request.method}</span> <span className="http uri">{request.uri}</span></td>
+                                                        <td>
+                                                            <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} className="http label button">
+                                                                {request.id}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {(function() {
+                                                                if (response != null) {
+                                                                    var isMessage = response.equals(this.props.message);
+                                                                    return (
+                                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)} className="http label button">
                                                                         {response.hashCode}
                                                                     </span>
-                                                                )
-                                                            } else {
-                                                                return (
-                                                                    <span className="http label button">
+                                                                    )
+                                                                } else {
+                                                                    return (
+                                                                        <span className="http label button">
                                                                         ...
                                                                     </span>
-                                                                )
-                                                            }
-                                                        }.bind(this))()}
+                                                                    )
+                                                                }
+                                                            }.bind(this))()}
+                                                        </td>
+                                                        <td>{event.duration}ms</td>
+                                                    </tr>
 
-                                                    </td>
-                                                    <td style={{width: "1%", minWidth: "100px", maxWidth: "100px"}}>{event.duration}ms</td>
-                                                </tr>
+                                                )
+                                            }, this)
+                                        }
+                                        <tr style={{height: "100%"}}>
+                                            <td style={{padding: "0px"}}></td>
+                                            <td style={{padding: "0px"}}></td>
+                                            <td style={{padding: "0px"}}></td>
+                                            <td style={{padding: "0px"}}></td>
+                                            <td style={{padding: "0px"}}></td>
+                                        </tr>
+                                    </TransitionGroup>
 
-                                            )
-                                        }, this)
-                                    }
-
-                                </TransitionGroup>
-                            </table>
+                                </div>
+                            </div>
 
 
                         </div>

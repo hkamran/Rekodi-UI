@@ -235,8 +235,8 @@ export class MessageBox extends React.Component {
                     <div className="item right border"
                          title="Save"
                          onClick={this.resetMessage.bind(this)}
-                         style={{fontSize: "11.4pt"}}
-                    >
+                         style={{fontSize: "10.5pt"}}
+                        >
                         <i className="fa fa-refresh" />
                     </div>
 
