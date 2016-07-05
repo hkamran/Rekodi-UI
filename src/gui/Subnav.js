@@ -70,10 +70,8 @@ export class Subnav extends React.Component {
                         </div>
                     )
                 }.bind(this))()}
-
+                <div className="resizer"></div>
                 <ul>
-                    <li className="resizer"></li>
-
                     <li className="subnav button" title="Recorder State" onClick={this.props.toggleStateHandler}>
                         {
                             (function() {

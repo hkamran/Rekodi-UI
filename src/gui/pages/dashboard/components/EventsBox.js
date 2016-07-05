@@ -10,15 +10,49 @@ import {Response} from '../../../../models/Response';
 
 export class EventBox extends React.Component {
 
-
-    componentDidUpdate() {
-        this.autoScroll();
-
+    constructor(props) {
+        super(props);
+        this.state = {
+            autoScroll : false
+        }
     }
 
-    autoScroll() {
-        var element = document.getElementById("tBodyContainer");
-        element.scrollTop = element.scrollHeight + 20;
+    componentDidMount() {
+        this.eventScrollBar = document.getElementById("tBodyContainer");
+    }
+
+    componentWillReceiveProps(nextProps){
+        var isAtBottom = this.isScrollAtBottom();
+        this.setAutoScroll(isAtBottom);
+    }
+
+    componentDidUpdate() {
+        if (this.state.autoScroll) {
+            this.scrollToBottom();
+        }
+    }
+
+    scrollToBottom() {
+        this.eventScrollBar.scrollTop = this.eventScrollBar.scrollHeight;
+    }
+
+    isScrollAtBottom() {
+        if (typeof this.eventScrollBar === 'undefined') {
+            return false;
+        }
+
+        if (this.eventScrollBar.scrollTop ===
+            (this.eventScrollBar.scrollHeight - this.eventScrollBar.offsetHeight)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    setAutoScroll(bool) {
+        this.setState({
+            autoScroll : bool
+        })
     }
 
     render() {
