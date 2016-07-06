@@ -18,6 +18,29 @@ export class Subnav extends React.Component {
         }
     }
 
+    componentDidMount() {
+        var uploadTapeButton = document.getElementById("tapeUploadButton");
+        var uploadTapeInput = document.getElementById("tapeUploadInput");
+        uploadTapeButton.onclick = function(e) {
+            uploadTapeInput.click();
+        }.bind(this);
+        uploadTapeInput.onchange = function() {
+            console.info("Reading tape... " + uploadTapeInput.files[0].name);
+            this.readTape();
+        }.bind(this);
+
+    }
+
+    readTape() {
+        var uploadTapeInput = document.getElementById("tapeUploadInput");
+        var file = uploadTapeInput.files[0];
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (evt) {
+            console.log(evt.target.result);
+        };
+    }
+
     showSettingsWindow() {
         this.setState({
             showSettings: true
@@ -44,6 +67,7 @@ export class Subnav extends React.Component {
     }
 
     render() {
+
 
         var downloadTape = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.props.tape));
 
@@ -103,10 +127,12 @@ export class Subnav extends React.Component {
                         }
 
                     </li>
-                    <li className="subnav button" title="Import Tape"><i className="fa fa-download" aria-hidden="true"></i></li>
-                    <li className="subnav button" title="Export Tape">
+                    <li className="subnav button" title="Import Tape" id="tapeUploadButton">
+                        <i className="fa fa-download" aria-hidden="true" />
+                        <input type="file" id="tapeUploadInput" style={{display: "none"}} onchange={this.readTape} />
+                    </li>
+                    <li className="subnav button" title="Export Tape" >
                         <i className="fa fa-upload" aria-hidden="true" />
-
                     </li>
                     <li className="subnav button" onClick={this.showSettingsWindow.bind(this)}  title="Settings">
                         <i className="fa fa-cog " aria-hidden="true" />

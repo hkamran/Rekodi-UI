@@ -10,7 +10,9 @@ export class Header extends React.Component {
             <div className="header" style={{height: "90px", position: "relative", background: "#353535 "}}>
                 <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #353535"}}>
 
-                    <div style={{float: "left", width: "60px", height: "1px"}}> </div>
+
+                    <div style={{width: "60px", height: "1px", float: "left"}}>
+                    </div>
 
                     <div className="tab wrapper">
                         <div className="tab top border selected" >
