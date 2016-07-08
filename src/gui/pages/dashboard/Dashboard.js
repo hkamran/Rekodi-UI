@@ -17,10 +17,33 @@ export class Dashboard extends React.Component {
         super(props);
 
         this.state = {
-            resetMessageHandler : function () {
-
-            }
+            resetMessageHandler : function () {}
         }
+    }
+
+    componentDidMount() {
+        Split(['#analysisContainer', '#eventsContainer'], {
+            sizes: [55, 45],
+            minSize: 200,
+            gutterElem: document.getElementById("contentSplitter"),
+            direction: 'vertical',
+
+        });
+
+        Split(['#headerContainer', '#contentContainer'], {
+            sizes: [32, 68],
+            minSize: 74,
+            gutterElem: document.getElementById("messageSplitterClickBox"),
+            gutterSize: 1,
+            gutterClickBox: document.getElementById("messageSplitterClickBox")
+
+        });
+
+        Split(['#tapeContainer', '#messageContainer'], {
+            sizes: [25, 75],
+            minSize: 200,
+            gutterElem: document.getElementById("analysisSplitter"),
+        });
     }
 
     setResetMessageHandler(handle) {

@@ -11,40 +11,44 @@ export class Header extends React.Component {
                 <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #353535"}}>
 
 
-                    <div style={{width: "60px", height: "1px", float: "left"}}>
-                    </div>
+                    <div style={{width: "60px", height: "1px", float: "left"}}></div>
+                    {
+                        Object.keys(this.props.proxies).sort().map(function(id, i) {
+                            var proxy = this.props.proxies[id];
+                            console.log("LOOK");
+                            console.log(id + ":" + proxy.id);
+                            console.log("LENGTH " + Object.keys(this.props.proxies));
+                            if (proxy.id === this.props.proxy.id) {
+                                console.log("LOIKKGG");
+                                return (
+                                    <div key={i}  className="tab wrapper">
+                                        <div className="tab top border selected">
+                                            <div className="tab top container selected text">
+                                                <span style={{fontSize: "9pt"}}>ddd</span>
+                                                <i className="fa fa-times" style={{marginLeft: "8px", color: "#8d8d8d"}}/>
+                                            </div>
+                                        </div>
+                                        <div className="tab bottom selected"></div>
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div key={i} className="tab wrapper">
+                                        <div  className="tab top border unselected">
+                                            <div className="tab top container unselected">
+                                                <div className="tab text" style={{width: "60px", height: "100%",  paddingTop: "2px", borderRight: "1px solid #999999", fontSize: "12pt", fontWeight: "600"}}>
+                                                    {proxy.name}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="tab bottom unselected"></div>
+                                    </div>
+                                )
+                            }
 
-                    <div className="tab wrapper">
-                        <div className="tab top border selected" >
-                            <div className="tab top container selected text" >
-                                <span style={{fontSize: "9pt"}}>Default Service</span>
-                                <i className="fa fa-times" style={{marginLeft: "8px", color: "#8d8d8d"}}></i>
-                            </div>
-                        </div>
-                        <div className="tab bottom selected"></div>
-                    </div>
+                        }.bind(this))
+                    }
 
-                    <div className="tab wrapper">
-                        <div  className="tab top border unselected">
-                            <div className="tab top container unselected">
-                                <div className="tab text" style={{width: "60px", height: "100%",  paddingTop: "2px", borderRight: "1px solid #999999", fontSize: "12pt", fontWeight: "600"}}>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="tab bottom unselected"></div>
-                    </div>
-
-                    <div className="tab wrapper">
-                        <div  className="tab top border unselected">
-                            <div className="tab top container unselected">
-                                <div className="tab text" style={{width: "60px", height: "100%",  paddingTop: "2px", borderRight: "1px solid #999999", fontSize: "12pt", fontWeight: "600"}}>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div className="tab bottom unselected"></div>
-                    </div>
 
                     <div className="tab bg">
                         <div className="top border" >

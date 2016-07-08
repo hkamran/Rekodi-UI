@@ -10,6 +10,7 @@ import {Service} from '../controllers/Service'
 
 import {Request} from '../models/Request';
 import {Response} from '../models/Response';
+import {Proxy} from '../models/Proxy';
 import {Settings} from '../models/Settings';
 import {Event, State} from '../models/Event';
 import {Tape} from '../models/Tape';
@@ -22,7 +23,8 @@ export class Main extends React.Component {
         super(props);
 
         this.state = {
-            proxy: "default",
+            proxies: {0:new Proxy(0, "???", 9090)},
+            proxy: 0,
             tape: new Tape(),
             message:  null,
             events: {},
@@ -30,8 +32,8 @@ export class Main extends React.Component {
             settings: new Settings(80,"", State.PROXY, true)
         };
         //var url = this.restURL = "http://" + location.host + "/rest";
-        //this.socket = new Socket("ws://localhost:8090/ws/");
-        this.socket = new Socket("ws://" + location.host + "/ws/");
+        this.socket = new Socket("ws://localhost:8090/ws/");
+        //this.socket = new Socket("ws://" + location.host + "/ws/");
     }
 
     componentDidMount() {
@@ -40,7 +42,17 @@ export class Main extends React.Component {
         this.socket.setHandlerForEventUpdate(this.handleEventUpdate.bind(this));
         this.socket.setHandlerForResponseUpdate(this.handleResponseUpdate.bind(this));
         this.socket.setHandlerForRequestUpdate(this.handleRequestUpdate.bind(this));
+        this.socket.setHandlerForProxyUpdate(this.handleProxyUpdate.bind(this));
         this.socket.start();
+    }
+
+    handleProxyUpdate(obj) {
+        if (obj instanceof Proxy) {
+            this.state.proxies[obj.id] = obj;
+            this.setState({
+                proxies : this.state.proxies
+            })
+        }
     }
 
     handleTapeUpdate(obj) {
@@ -100,23 +112,23 @@ export class Main extends React.Component {
     }
 
     clearTapeHandler() {
-        var payload = new Payload(Payload.types.TAPE, new Tape().getJSON());
+        var payload = new Payload(this.state.proxy, Payload.types.TAPE, new Tape().getJSON());
         this.socket.send(payload);
         this.setMessageHandler(null);
     }
 
     updateMessageHandler(message) {
         if (message instanceof Request) {
-            var payload = new Payload(Payload.types.REQUEST, message);
+            var payload = new Payload(this.state.proxy, Payload.types.REQUEST, message);
             this.socket.send(payload);
         } else if (message instanceof Response) {
-            var payload = new Payload(Payload.types.RESPONSE, message);
+            var payload = new Payload(this.state.proxy, Payload.types.RESPONSE, message);
             this.socket.send(payload)
         }
     }
 
     updateSettingsHandler(settings) {
-        var payload = new Payload(Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 
@@ -131,7 +143,7 @@ export class Main extends React.Component {
             settings.state = State.PROXY;
         }
 
-        var payload = new Payload(Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 
@@ -143,7 +155,7 @@ export class Main extends React.Component {
             settings.redirect = true;
         }
 
-        var payload = new Payload(Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 
@@ -196,7 +208,7 @@ export class Main extends React.Component {
     render() {
         return (
             <div className="grow height width">
-                <Header />
+                <Header proxies={this.state.proxies} proxy={this.state.proxy}  />
                 <div className="breaker"></div>
                 <div className="main">
                     <Subnav settings={this.state.settings}

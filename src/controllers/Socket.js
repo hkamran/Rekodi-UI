@@ -11,7 +11,6 @@ export class Socket {
 
     start() {
         this.socket = new WebSocket(this.url);
-
         this.socket.onmessage = this._onMessage.bind(this);
         this.socket.onclose = this._onClose.bind(this);
         this.socket.onopen = this._onOpen.bind(this);
@@ -39,6 +38,10 @@ export class Socket {
         this.responseUpdateHandler = callback;
     }
 
+    setHandlerForProxyUpdate(callback) {
+        this.proxyUpdateHandler = callback;
+    }
+
     send(event) {
         if (event instanceof Payload) {
             this.socket.send(JSON.stringify(event));
@@ -60,6 +63,8 @@ export class Socket {
             this.requestUpdateHandler(event.message);
         } else if (Payload.types.cmp(event.type, Payload.types.RESPONSE)) {
             this.responseUpdateHandler(event.message);
+        } else if (Payload.types.cmp(event.type, Payload.types.PROXY)) {
+            this.proxyUpdateHandler(event.message);
         } else {
             console.error("Can't read payload", event);
             //BLAH
