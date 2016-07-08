@@ -20,7 +20,7 @@ export class Header extends React.Component {
                                     <div key={i}  className="tab wrapper">
                                         <div className="tab top border selected">
                                             <div className="tab top container selected text">
-                                                <span style={{fontSize: "9pt"}}>ddd</span>
+                                                <span style={{fontSize: "9pt"}}>{proxy.name}</span>
                                                 <i className="fa fa-times" style={{marginLeft: "8px", color: "#8d8d8d"}}/>
                                             </div>
                                         </div>
