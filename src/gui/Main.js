@@ -22,9 +22,11 @@ export class Main extends React.Component {
     constructor(props) {
         super(props);
 
+        var proxy = new Proxy(0, "???", 9090);
+
         this.state = {
-            proxies: {0:new Proxy(0, "???", 9090)},
-            proxy: 0,
+            proxies: {0: proxy},
+            proxy: proxy,
             tape: new Tape(),
             message:  null,
             events: {},
@@ -112,23 +114,23 @@ export class Main extends React.Component {
     }
 
     clearTapeHandler() {
-        var payload = new Payload(this.state.proxy, Payload.types.TAPE, new Tape().getJSON());
+        var payload = new Payload(this.state.proxy.id, Payload.types.TAPE, new Tape().getJSON());
         this.socket.send(payload);
         this.setMessageHandler(null);
     }
 
     updateMessageHandler(message) {
         if (message instanceof Request) {
-            var payload = new Payload(this.state.proxy, Payload.types.REQUEST, message);
+            var payload = new Payload(this.state.proxy.id, Payload.types.REQUEST, message);
             this.socket.send(payload);
         } else if (message instanceof Response) {
-            var payload = new Payload(this.state.proxy, Payload.types.RESPONSE, message);
+            var payload = new Payload(this.state.proxy.id, Payload.types.RESPONSE, message);
             this.socket.send(payload)
         }
     }
 
     updateSettingsHandler(settings) {
-        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy.id, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 
@@ -143,7 +145,7 @@ export class Main extends React.Component {
             settings.state = State.PROXY;
         }
 
-        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy.id, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 
@@ -155,7 +157,7 @@ export class Main extends React.Component {
             settings.redirect = true;
         }
 
-        var payload = new Payload(this.state.proxy, Payload.types.SETTINGS, settings);
+        var payload = new Payload(this.state.proxy.id, Payload.types.SETTINGS, settings);
         this.socket.send(payload);
     }
 

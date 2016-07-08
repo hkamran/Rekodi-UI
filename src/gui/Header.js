@@ -15,11 +15,7 @@ export class Header extends React.Component {
                     {
                         Object.keys(this.props.proxies).sort().map(function(id, i) {
                             var proxy = this.props.proxies[id];
-                            console.log("LOOK");
-                            console.log(id + ":" + proxy.id);
-                            console.log("LENGTH " + Object.keys(this.props.proxies));
                             if (proxy.id === this.props.proxy.id) {
-                                console.log("LOIKKGG");
                                 return (
                                     <div key={i}  className="tab wrapper">
                                         <div className="tab top border selected">
