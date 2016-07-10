@@ -6,7 +6,8 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {State} from './../models/Event';
-import {Settings} from './../models/Settings';
+import {Filter} from './../models/Filter';
+import {Payload} from '../controllers/models/Payload';
 
 export class Subnav extends React.Component {
 
@@ -57,12 +58,12 @@ export class Subnav extends React.Component {
         var hostname = this.refs.hostnameInput.value;
         var port = this.refs.portInput.value;
 
-        var settings = this.props.settings.clone();
-        settings.host = hostname;
-        settings.port = port;
+        var filter = this.props.filter.clone();
+        filter.host = hostname;
+        filter.port = port;
 
         this.closeSettingsWindow();
-        this.props.updateSettingsHandler(settings);
+        this.props.updateFilterHandler(Payload.actions.UPDATE, filter);
 
     }
 
@@ -83,10 +84,10 @@ export class Subnav extends React.Component {
                             <div></div>
                             <div style={{marginBottom: "15px"}}>
                                 <label>Hostname:
-                                    <input ref="hostnameInput" type="text" defaultValue={this.props.settings.host} />
+                                    <input ref="hostnameInput" type="text" defaultValue={this.props.filter.host} />
                                 </label>
                                 <label>Port:
-                                    <input ref="portInput" type="text" defaultValue={this.props.settings.port} />
+                                    <input ref="portInput" type="text" defaultValue={this.props.filter.port} />
                                 </label>
                             </div>
                             <a className="button" onClick={this.closeSettingsWindow.bind(this)}>Close</a>
@@ -100,9 +101,9 @@ export class Subnav extends React.Component {
                         {
                             (function() {
                                 var src = "./assets/images/red_circle_button.png";
-                                if (State.cmp(this.props.settings.state, State.PROXY)) {
+                                if (State.cmp(this.props.filter.state, State.PROXY)) {
                                     src = "./assets/images/green_circle_button.png";
-                                } else if (State.cmp(this.props.settings.state, State.MOCK)) {
+                                } else if (State.cmp(this.props.filter.state, State.MOCK)) {
                                    src="./assets/images/orange_circle_button.png";
                                 }
 
@@ -116,7 +117,7 @@ export class Subnav extends React.Component {
                         {
                             (function() {
                                 var src = "./assets/images/toggle_off.png";
-                                if (this.props.settings.redirect) {
+                                if (this.props.filter.redirect) {
                                     src = "./assets/images/toggle_on.png";
                                 }
 

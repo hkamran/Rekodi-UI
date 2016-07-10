@@ -80,10 +80,13 @@ export class EventBox extends React.Component {
                                 </div>
                                 <div id="tBodyContainer">
 
-                                    <TransitionGroup id="tBody" style={{height: "100%"}} cellSpacing ="0" component="table" transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
-                                        {
 
-                                            Object.keys(this.props.events).sort().map(function(id, i, props) {
+                                    <TransitionGroup id="tBody" style={{height: "100%"}} cellSpacing="0"
+                                                     component="table" transitionName="example"
+                                                     transitionEnterTimeout={500}
+                                                     transitionLeaveTimeout={300}>
+                                        {
+                                            Object.keys(this.props.events).sort().map(function (id, i, props) {
                                                 var event = this.props.events[id];
                                                 var request = event.request;
                                                 var response = event.response;
@@ -93,26 +96,33 @@ export class EventBox extends React.Component {
                                                 return (
                                                     <tr key={i} style={{height: "1%"}}>
                                                         <td>{event.startTime}</td>
-                                                        <td>Incoming Request: <span className="http method">{request.method}</span> <span className="http uri">{request.uri}</span></td>
-                                                        <td>
-                                                            <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} className="http label button">
-                                                                {request.id}
-                                                            </span>
+                                                        <td>Incoming Request: <span
+                                                            className="http method">{request.method}</span>
+                                                            <span className="http uri">{request.uri}</span>
                                                         </td>
                                                         <td>
-                                                            {(function() {
+                                                    <span
+                                                        onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)}
+                                                        className="http label button">
+                                                        {request.id}
+                                                    </span>
+                                                        </td>
+                                                        <td>
+                                                            {(function () {
                                                                 if (response != null) {
                                                                     var isMessage = response.equals(this.props.message);
                                                                     return (
-                                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)} className="http label button">
-                                                                        {response.hashCode}
-                                                                    </span>
+                                                                        <span
+                                                                            onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)}
+                                                                            className="http label button">
+                                                                {response.hashCode}
+                                                            </span>
                                                                     )
                                                                 } else {
                                                                     return (
                                                                         <span className="http label button">
-                                                                        ...
-                                                                    </span>
+                                                                ...
+                                                            </span>
                                                                     )
                                                                 }
                                                             }.bind(this))()}
@@ -124,18 +134,16 @@ export class EventBox extends React.Component {
                                             }, this)
                                         }
                                         <tr style={{height: "100%"}}>
-                                            <td style={{padding: "0px"}}></td>
-                                            <td style={{padding: "0px"}}></td>
-                                            <td style={{padding: "0px"}}></td>
-                                            <td style={{padding: "0px"}}></td>
-                                            <td style={{padding: "0px"}}></td>
+                                            <td style={{padding: "0px"}} />
+                                            <td style={{padding: "0px"}} />
+                                            <td style={{padding: "0px"}} />
+                                            <td style={{padding: "0px"}} />
+                                            <td style={{padding: "0px"}} />
                                         </tr>
                                     </TransitionGroup>
 
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>

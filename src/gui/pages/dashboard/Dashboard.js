@@ -57,15 +57,31 @@ export class Dashboard extends React.Component {
     }
 
     render() {
+
+       //tape={this.getSelectedWindow().tape}
+       //events={this.getSelectedWindow().events}
+       //message={this.getSelectedWindow().message}
+       //search={this.getSelectedWindow().search}
+       //
+       //setMessageHandler={this.setMessageHandler.bind(this)}
+       //setSearchHandler={this.setSearchHandler.bind(this)}
+       //setEventsHandler={this.setEventsHandler.bind(this)}
+       //
+       //updateMessageHandler={this.updateMessageHandler.bind(this)}
+       //updateTapeHandler={this.updateTapeHandler.bind(this)}
+
+
         return (
             <div className="grow width height">
                 <div id="analysisContainer" style={{height: "calc(50% - 5px)"}}>
                     <TapeBox tape={this.props.tape}
                              message={this.props.message}
                              search={this.props.search}
-                             clearTapeHandler={this.props.clearTapeHandler}
+                             updateTapeHandler={this.props.updateTapeHandler}
+
                              setSearchHandler={this.props.setSearchHandler}
                              setMessageHandler={this.props.setMessageHandler}
+
                              resetMessageHandler={this.resetMessageHandler.bind(this)}
                     />
                     <div id="analysisSplitter" className="splitter horizontal">
@@ -87,8 +103,10 @@ export class Dashboard extends React.Component {
 
                 <EventBox events={this.props.events}
                           message={this.props.message}
+
                           setMessageHandler={this.props.setMessageHandler}
                           setEventsHandler={this.props.setEventsHandler}
+
                           resetMessageHandler={this.resetMessageHandler.bind(this)}
                 />
             </div>

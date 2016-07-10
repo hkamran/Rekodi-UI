@@ -22,8 +22,8 @@ export class Socket {
         this.tapeUpdateHandler = callback;
     }
 
-    setHandlerForSettingsUpdate(callback) {
-        this.settingsUpdateHandler = callback;
+    setHandlerForFilterUpdate(callback) {
+        this.filterUpdateHandler = callback;
     }
 
     setHandlerForEventUpdate(callback) {
@@ -42,6 +42,18 @@ export class Socket {
         this.proxyUpdateHandler = callback;
     }
 
+    setHandlerForProxyInsert(callback) {
+        this.proxyInsertHandler = callback;
+    }
+
+    setHandlerForProxyDelete(callback) {
+        this.proxyDeleteHandler = callback;
+    }
+
+    setHandlerForProxiesUpdate(callback) {
+        this.proxiesUpdateHandler = callback;
+    }
+
     send(event) {
         if (event instanceof Payload) {
             this.socket.send(JSON.stringify(event));
@@ -55,8 +67,8 @@ export class Socket {
         var event = Payload.parseMessage(message);
         if (Payload.types.cmp(event.type, Payload.types.TAPE)) {
             this.tapeUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.SETTINGS)) {
-            this.settingsUpdateHandler(event.message);
+        } else if (Payload.types.cmp(event.type, Payload.types.FILTER)) {
+            this.filterUpdateHandler(event.message);
         } else if (Payload.types.cmp(event.type, Payload.types.EVENT)) {
             this.eventUpdateHandler(event.message);
         } else if (Payload.types.cmp(event.type, Payload.types.REQUEST)) {
@@ -64,7 +76,17 @@ export class Socket {
         } else if (Payload.types.cmp(event.type, Payload.types.RESPONSE)) {
             this.responseUpdateHandler(event.message);
         } else if (Payload.types.cmp(event.type, Payload.types.PROXY)) {
-            this.proxyUpdateHandler(event.message);
+
+            if (Payload.actions.cmp(event.action, Payload.actions.UPDATE)) {
+                this.proxyUpdateHandler(event.message);
+            } else if (Payload.actions.cmp(event.action, Payload.actions.DELETE)) {
+                this.proxyDeleteHandler(event.message);
+            } else if (Payload.actions.cmp(event.action, Payload.actions.INSERT)) {
+                this.proxyInsertHandler(event.message);
+            }
+
+        } else if (Payload.types.cmp(event.type, Payload.types.PROXIES)) {
+            this.proxiesUpdateHandler(event.message);
         } else {
             console.error("Can't read payload", event);
             //BLAH

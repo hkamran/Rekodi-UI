@@ -3,7 +3,7 @@
  */
 import {State} from './Event';
 
-export class Settings {
+export class Filter {
     constructor(port, host, state, redirect) {
         this.port = port;
         this.host = host;
@@ -13,16 +13,13 @@ export class Settings {
 
     static parseJSON(source) {
         try {
-            console.info("Loading Settings...");
-
             var host = source["host"];
             var port = source["port"];
             var state = State.valueOf(source["state"]);
             var redirect = source["redirect"];
 
-            console.info("Settings loaded successfully!");
 
-            return new Settings(port, host, state, redirect);
+            return new Filter(port, host, state, redirect);
 
         } catch (err) {
             console.error("Unable to parse settings ", source);
@@ -30,6 +27,6 @@ export class Settings {
     }
 
     clone() {
-        return new Settings(this.port, this.host, this.state, this.redirect);
+        return new Filter(this.port, this.host, this.state, this.redirect);
     }
 }

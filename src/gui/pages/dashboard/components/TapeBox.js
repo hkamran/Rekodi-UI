@@ -8,6 +8,7 @@ import {Tape} from '../../../../models/Tape';
 import {Event, State} from '../../../../models/Event';
 import {Request} from '../../../../models/Request';
 import {Response} from '../../../../models/Response';
+import {Payload} from '../../../../controllers/models/Payload';
 
 export class TapeBox extends React.Component {
 
@@ -25,12 +26,19 @@ export class TapeBox extends React.Component {
         );
     }
 
+    clearTape() {
+        var tape = new Tape();
+        var action = Payload.actions.UPDATE;
+        this.props.updateTapeHandler(action, tape);
+        this.props.setMessageHandler(null);
+    }
+
     render() {
         return (
             <div id="tapeContainer" className="box" >
                 <div className="header">
                     <div className="item left border">Tape</div>
-                    <div className="item right border" onClick={this.props.clearTapeHandler.bind(this)}><i className="fa fa-file-o" aria-hidden="true"></i></div>
+                    <div className="item right border" onClick={this.clearTape.bind(this)}><i className="fa fa-file-o" aria-hidden="true"></i></div>
                 </div>
                 <div className="body">
                     <div className="column grow width">

@@ -5,7 +5,7 @@ import 'whatwg-fetch';
 import restful, { fetchBackend } from 'restful.js';
 import {Request} from '../models/Request';
 import {Response} from '../models/Response';
-import {Settings} from '../models/Settings';
+import {Settings} from '../models/Filter';
 import {Tape} from '../models/Tape';
 import {State, Event} from '../models/Event';
 import $ from 'jquery';

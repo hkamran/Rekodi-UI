@@ -8,6 +8,7 @@ import InlineEdit from 'react-edit-inline';
 import {Request} from '../../../../models/Request';
 import {Response} from '../../../../models/Response';
 import {Event, State} from '../../../../models/Event';
+import {Payload} from '../../../../controllers/models/Payload';
 
 export class MessageBox extends React.Component {
 
@@ -210,8 +211,11 @@ export class MessageBox extends React.Component {
 
     updateMessage() {
         var message = this.state.message;
+        if (!(message instanceof Request || message instanceof Response)) {
+            return;
+        }
         message.content = this.editor.getValue();
-        this.props.updateMessageHandler(message);
+        this.props.updateMessageHandler(Payload.actions.UPDATE, message);
     }
 
     render() {
