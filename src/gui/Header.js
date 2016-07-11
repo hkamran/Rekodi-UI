@@ -44,7 +44,18 @@ export class Header extends React.Component {
 
     render() {
         return (
-            <div className="header" style={{height: "90px", position: "relative", background: "#353535 "}}>
+            <div className="header" style={{height: "75px", position: "relative", background: "url('./assets/images/logo.png') 10px 7px no-repeat fixed #353535"
+
+            }}>
+
+                <div style={{position: "absolute",
+                right: "5px",
+                top: "3px",
+                padding: "5px",
+                color: "#999"}}>
+                    <i className="fa fa-info-circle"></i>
+                    <i className="fa fa-question-circle" style={{paddingLeft: "5px"}}></i>
+                </div>
 
                 {(function() {
                     if (!this.state.showProxyWindow) {
