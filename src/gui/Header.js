@@ -72,11 +72,11 @@ export class Header extends React.Component {
                     <div className="tab wrapper">
                         <div className="tab top selected" style={{borderBottom: "1px solid #858585", height: "23px", borderRight: "1px solid #858585"}}>
                             <div className="tab top container items">
-                                <div className="tab top container item left" onClick={this.showProxyWindow.bind(this)} >
-                                    <img style={{marginLeft: "10px", marginBottom: "1px"}} src="./assets/images/plus.png" />
+                                <div className="tab top container item left" onClick={this.showProxyWindow.bind(this)} style={{display:"table-cell", verticalAlign:"middle", textAlign:"center"}} >
+                                    <img src="./assets/images/plus.png" />
                                 </div>
-                                <div className="tab top container item right">
-                                    <img style={{marginLeft: "8px", marginBottom: "1px"}} src="./assets/images/list.png" />
+                                <div className="tab top container item right" style={{display:"table-cell", verticalAlign:"middle", textAlign:"center"}}>
+                                    <img src="./assets/images/list.png" />
                                 </div>
                             </div>
                         </div>
