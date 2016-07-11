@@ -24,15 +24,11 @@ export class Main extends React.Component {
     constructor(props) {
         super(props);
 
-        var windows = {0: Window.create()};
-        var proxies = new Proxies();
-        var proxy = new Proxy(0, 9090,"???", "START");
-        proxies.put(0, proxy);
+        var windows = {0: Window.create(0)};
 
         this.state = {
             windows: windows,
-            proxies: proxies,
-            selectedWindow: 0,
+            window: windows[0],
         };
         //var url = this.restURL = "http://" + location.host + "/rest";
         this.socket = new Socket("ws://localhost:8090/ws/");
@@ -53,31 +49,27 @@ export class Main extends React.Component {
     }
 
     setSelectedWindow(id) {
-        console.log("SETTING TO " + id);
-        this.setState({
-            selectedWindow: id
-        });
-    }
-
-    getSelectedWindow() {
-        if (this.state.selectedWindow in this.state.windows) {
-            return this.state.windows[this.state.selectedWindow];
+        console.log("Switching window to " + id);
+        if (id in this.state.windows) {
+            this.state.window = this.state.windows[id];
+            this.setWindow(this.state.window);
+        } else {
+            console.error("Unable to find window id: " + id);
         }
-        console.error("Unable to find window information for " + this.state.selectedWindow);
-        console.log(this.state.windows);
     }
 
     handleProxiesUpdate(obj) {
         if (obj instanceof Proxies) {
             var proxies = obj;
             proxies.keySet().map(function(id) {
-               if (!(id in this.state.windows)) {
-                    this.state.windows[id] = Window.create();
-               }
+                var window = Window.create(id);
+                window.proxy = proxies.get(id);
+                this.state.windows[id] = window;
             }.bind(this));
 
             this.setState({
-                proxies : obj
+                windows : this.state.windows,
+                window: this.state.windows[this.state.window.id]
             })
         }
     }
@@ -85,9 +77,11 @@ export class Main extends React.Component {
     handleProxyUpdate(obj) {
         if (obj instanceof Proxy) {
             var proxy = obj;
-            this.state.proxies.put(proxy.id, proxy);
+            var window = this.state.windows[proxy.id];
+            window.proxy = proxy;
+
             this.setState({
-                proxies : this.state.proxies
+                windows : this.state.windows
             })
         }
     }
@@ -95,11 +89,11 @@ export class Main extends React.Component {
     handleProxyInsert(obj) {
         if (obj instanceof Proxy) {
             var proxy = obj;
-            this.state.proxies.put(proxy.id, proxy)
-            this.state.windows[proxy.id] = Window.create();
+            var window = Window.create(proxy.id);
+            window.proxy = proxy;
+            this.state.windows[proxy.id] = window;
 
             this.setState({
-                proxies : this.state.proxies,
                 windows : this.state.windows
             })
         }
@@ -108,56 +102,49 @@ export class Main extends React.Component {
     handleProxyDelete(obj) {
         if (obj instanceof Proxy) {
             var proxy = obj;
-            this.state.proxies.remove(proxy.id);
+
             delete this.state.windows[proxy.id];
 
             var keys = Object.keys(this.state.windows);
-            this.state.selectedWindow = keys[keys.length - 1];
-            console.log("LOOK " + this.state.selectedWindow);
+            var lastKey = keys[keys.length - 1];
 
             this.setState({
-                proxies : this.state.proxies,
-                windows : this.state.windows,
-                selectedWindow : this.state.selectedWindow
+                windows : this.state.windows
             })
+            this.setSelectedWindow(lastKey);
         }
     }
 
     handleTapeUpdate(obj) {
         if (obj instanceof Tape) {
             var tape = obj;
-            var window = this.getSelectedWindow();
+            var window = this.state.window;
 
             window.tape = tape;
-            this.setState({
-                windows: this.state.windows
-            });
+            this.setWindow(window);
         }
     }
 
     handleFilterUpdate(obj) {
         if (obj instanceof Filter) {
             var filter = obj;
-            var window = this.getSelectedWindow();
+            var window = this.state.window;
 
             window.filter = filter;
-            this.setState({
-                windows: this.state.windows
-            });
+            this.setWindow(window);
         }
     }
 
     handleRequestUpdate(obj) {
         var request = obj;
         if (request instanceof Request) {
-            var window = this.getSelectedWindow();
+            var window = this.state.window;
+
             var original = window.message;
             if (original.id == request.pastID) {
 
                 window.message = request;
-                this.setState({
-                    windows: this.state.windows
-                });
+                this.setWindow(window);
             }
         }
     }
@@ -165,14 +152,12 @@ export class Main extends React.Component {
     handleResponseUpdate(obj) {
         var response = obj;
         if (response instanceof Response) {
-            var window = this.getSelectedWindow();
+            var window = this.state.window;
             var original = window.message;
             if (original.parent == response.parent && original.id == response.id) {
 
                 window.message = response;
-                this.setState({
-                    windows: this.state.windows
-                });
+                this.setWindow(window);
             }
         }
     }
@@ -184,7 +169,7 @@ export class Main extends React.Component {
             var request = event.request;
             var response = event.response;
 
-            var window = this.getSelectedWindow();
+            var window = this.state.window;
             var tape = window.tape;
 
             if (tape.containsRequest(request.id)) {
@@ -200,23 +185,23 @@ export class Main extends React.Component {
             }
 
             window.events[event.id] = event;
-            this.setState({
-                windows: this.state.windows
-            });
+            this.setWindow(window);
         }
     }
 
     updateTapeHandler(action, tape) {
-        var payload = new Payload(this.state.selectedWindow, action, Payload.types.TAPE, tape.getJSON());
+        var id = this.state.window.id;
+        var payload = new Payload(id, action, Payload.types.TAPE, tape.getJSON());
         this.socket.send(payload);
     }
 
     updateMessageHandler(action, message) {
+        var id = this.state.window.id;
         if (message instanceof Request) {
-            var payload = new Payload(this.state.selectedWindow, action, Payload.types.REQUEST, message);
+            var payload = new Payload(id, action, Payload.types.REQUEST, message);
             this.socket.send(payload);
         } else if (message instanceof Response) {
-            var payload = new Payload(this.state.selectedWindow, action, Payload.types.RESPONSE, message);
+            var payload = new Payload(id, action, Payload.types.RESPONSE, message);
             this.socket.send(payload)
         }
     }
@@ -227,12 +212,13 @@ export class Main extends React.Component {
     }
 
     updateFilterHandler(action, filter) {
-        var payload = new Payload(this.state.selectedWindow, action, Payload.types.FILTER, filter);
+        var id = this.state.window.id;
+        var payload = new Payload(id, action, Payload.types.FILTER, filter);
         this.socket.send(payload);
     }
 
     toggleStateHandler() {
-        var window = this.getSelectedWindow();
+        var window = this.state.window;
         var filter = window.filter.clone();
 
         if (State.cmp(filter.state, State.PROXY)) {
@@ -247,7 +233,7 @@ export class Main extends React.Component {
     }
 
     toggleRedirectHandler() {
-        var window = this.getSelectedWindow();
+        var window = this.state.window;
         var filter = window.filter.clone();
 
         if (filter.redirect) {
@@ -260,54 +246,66 @@ export class Main extends React.Component {
     }
 
     setMessageHandler(msg) {
-        var window = this.getSelectedWindow();
+        var window = this.state.window;
         window.message = msg;
 
-        this.setState({
-            windows: this.state.windows
-        })
+        this.setWindow(window);
     }
 
     setSearchHandler(search) {
-        var window = this.getSelectedWindow();
+        var window = this.state.window;
         window.search = search;
 
-        this.setState({
-            windows: this.state.windows
-        })
+        this.setWindow(window);
     }
 
     setEventsHandler(events) {
-        var window = this.getSelectedWindow();
+        var window = this.state.window;
         window.events = events;
 
+        this.setWindow(window);
+    }
+
+    setWindow(window) {
+        this.state.windows[window.id] = window;
         this.setState({
-            windows: this.state.windows
+            windows: this.state.windows,
+            window: window
         })
+    }
+
+    getProxies() {
+        var proxies = {};
+        Object.keys(this.state.windows).map(function(id) {
+            var window = this.state.windows[id];
+            proxies[id] = window.proxy;
+        }.bind(this));
+        return proxies;
     }
 
     render() {
         return (
             <div className="grow height width">
-                <Header proxies={this.state.proxies.proxies}
-                        selectedWindow={this.state.selectedWindow}
+                <Header proxies={this.getProxies()}
+                        selectedWindow={this.state.window.id}
                         updateProxyHandler={this.updateProxyHandler.bind(this)}
+                        handleProxyInsert={this.handleProxyInsert.bind(this)}
                         setSelectedWindow={this.setSelectedWindow.bind(this)}
                 />
                 <div className="breaker"></div>
                 <div className="main">
-                    <Subnav filter={this.getSelectedWindow().filter}
+                    <Subnav filter={this.state.window.filter}
                             toggleStateHandler={this.toggleStateHandler.bind(this)}
                             toggleRedirectHandler={this.toggleRedirectHandler.bind(this)}
-                            tape={this.getSelectedWindow().tape}
+                            tape={this.state.window.tape}
                             updateFilterHandler={this.updateFilterHandler.bind(this)}
                     />
                     <div className="container">
                         <div className="content ">
-                            <Dashboard tape={this.getSelectedWindow().tape}
-                                       events={this.getSelectedWindow().events}
-                                       message={this.getSelectedWindow().message}
-                                       search={this.getSelectedWindow().search}
+                            <Dashboard tape={this.state.window.tape}
+                                       events={this.state.window.events}
+                                       message={this.state.window.message}
+                                       search={this.state.window.search}
 
                                        setMessageHandler={this.setMessageHandler.bind(this)}
                                        setSearchHandler={this.setSearchHandler.bind(this)}

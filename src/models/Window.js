@@ -11,7 +11,9 @@ import {Tape} from './Tape';
 
 export class Window {
 
-    constructor() {
+    constructor(id) {
+        this.id = id;
+        this.proxy = new Proxy(0, 9090,"???", "START");
         this.tape = new Tape();
         this.message =   null;
         this.events = {};
@@ -19,7 +21,7 @@ export class Window {
         this.filter = new Filter(80,"localhost", State.PROXY, true);
     }
 
-    static create() {
-        return new Window();
+    static create(id) {
+        return new Window(id);
     }
 }

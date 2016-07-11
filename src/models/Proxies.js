@@ -17,6 +17,10 @@ export class Proxies {
         delete this.proxies[id];
     }
 
+    get(id) {
+        return this.proxies[id];
+    }
+
     keySet() {
         return Object.keys(this.proxies);
     }

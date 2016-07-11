@@ -30,8 +30,10 @@ export class MessageBox extends React.Component {
 
         this.editor.on('change',function(cMirror){
             if (!this.state.dirty) {
-                if (this.editor.getValue() !== this.state.message.content) {
-                    this.setDirty(true);
+                if (this.state.message != null) {
+                    if (this.editor.getValue() !== this.state.message.content) {
+                        this.setDirty(true);
+                    }
                 }
             }
         }.bind(this));
@@ -216,6 +218,7 @@ export class MessageBox extends React.Component {
         }
         message.content = this.editor.getValue();
         this.props.updateMessageHandler(Payload.actions.UPDATE, message);
+        this.setDirty(false);
     }
 
     render() {
