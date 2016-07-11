@@ -12,7 +12,8 @@ export class Header extends React.Component {
         super(props);
 
         this.state = {
-            showProxyWindow: false
+            showProxyWindow: false,
+            showInformation: false
         };
     }
 
@@ -22,9 +23,21 @@ export class Header extends React.Component {
         });
     }
 
+    showInformation() {
+        this.setState({
+            showInformation: true
+        });
+    }
+
     hideProxyWindow() {
         this.setState({
             showProxyWindow: false
+        });
+    }
+
+    hideInformation() {
+        this.setState({
+            showInformation: false
         });
     }
 
@@ -48,14 +61,30 @@ export class Header extends React.Component {
 
             }}>
 
-                <div style={{position: "absolute",
-                right: "5px",
-                top: "3px",
-                padding: "5px",
-                color: "#999"}}>
-                    <i className="fa fa-info-circle"></i>
-                    <i className="fa fa-question-circle" style={{paddingLeft: "5px"}}></i>
+                <div className="header icons">
+                    <a onClick={this.showInformation.bind(this)}><i className="fa fa-info-circle" /></a>
                 </div>
+                <div className="version">
+                    Rekodi 1.0.0
+                </div>
+
+                {(function() {
+                    if (!this.state.showInformation) {
+                        return;
+                    }
+
+                    return (
+                        <div className="settings" style={{top: "335%"}}>
+                            <div style={{marginBottom: "15px", fontSize: "10pt", color: "#555"}}>
+                                Record and playback webservice calls.<br /><br />
+
+                                Version: 1.0.0<br />
+                                Author: <a href="https://github.com/hkamran">Hooman Kamran</a>
+                            </div>
+                            <a className="button" onClick={this.hideInformation.bind(this)}>Close</a>
+                       </div>
+                    )
+                }.bind(this))()}
 
                 {(function() {
                     if (!this.state.showProxyWindow) {
