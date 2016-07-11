@@ -18,7 +18,7 @@ export class Window {
         this.message =   null;
         this.events = {};
         this.search = "";
-        this.filter = new Filter(80,"localhost", State.PROXY, true);
+        this.filter = new Filter(0, 80,"localhost", State.PROXY, true);
     }
 
     static create(id) {

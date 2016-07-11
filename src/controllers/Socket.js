@@ -64,31 +64,31 @@ export class Socket {
 
     _onMessage(message) {
         console.info("Receiving a message from server.")
-        var event = Payload.parseMessage(message);
-        if (Payload.types.cmp(event.type, Payload.types.TAPE)) {
-            this.tapeUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.FILTER)) {
-            this.filterUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.EVENT)) {
-            this.eventUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.REQUEST)) {
-            this.requestUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.RESPONSE)) {
-            this.responseUpdateHandler(event.message);
-        } else if (Payload.types.cmp(event.type, Payload.types.PROXY)) {
+        var payload = Payload.parseMessage(message);
+        if (Payload.types.cmp(payload.type, Payload.types.TAPE)) {
+            this.tapeUpdateHandler(payload);
+        } else if (Payload.types.cmp(payload.type, Payload.types.FILTER)) {
+            this.filterUpdateHandler(payload);
+        } else if (Payload.types.cmp(payload.type, Payload.types.EVENT)) {
+            this.eventUpdateHandler(payload);
+        } else if (Payload.types.cmp(payload.type, Payload.types.REQUEST)) {
+            this.requestUpdateHandler(payload);
+        } else if (Payload.types.cmp(payload.type, Payload.types.RESPONSE)) {
+            this.responseUpdateHandler(payload);
+        } else if (Payload.types.cmp(payload.type, Payload.types.PROXY)) {
 
-            if (Payload.actions.cmp(event.action, Payload.actions.UPDATE)) {
-                this.proxyUpdateHandler(event.message);
-            } else if (Payload.actions.cmp(event.action, Payload.actions.DELETE)) {
-                this.proxyDeleteHandler(event.message);
-            } else if (Payload.actions.cmp(event.action, Payload.actions.INSERT)) {
-                this.proxyInsertHandler(event.message);
+            if (Payload.actions.cmp(payload.action, Payload.actions.UPDATE)) {
+                this.proxyUpdateHandler(payload);
+            } else if (Payload.actions.cmp(payload.action, Payload.actions.DELETE)) {
+                this.proxyDeleteHandler(payload);
+            } else if (Payload.actions.cmp(payload.action, Payload.actions.INSERT)) {
+                this.proxyInsertHandler(payload);
             }
 
-        } else if (Payload.types.cmp(event.type, Payload.types.PROXIES)) {
-            this.proxiesUpdateHandler(event.message);
+        } else if (Payload.types.cmp(payload.type, Payload.types.PROXIES)) {
+            this.proxiesUpdateHandler(payload);
         } else {
-            console.error("Can't read payload", event);
+            console.error("Can't read payload", payload);
             //BLAH
         }
     }

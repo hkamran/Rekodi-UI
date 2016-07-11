@@ -30,7 +30,6 @@ export class Main extends React.Component {
             windows: windows,
             window: windows[0],
         };
-        //var url = this.restURL = "http://" + location.host + "/rest";
         this.socket = new Socket("ws://localhost:8090/ws/");
         //this.socket = new Socket("ws://" + location.host + "/ws/");
     }
@@ -59,8 +58,8 @@ export class Main extends React.Component {
     }
 
     handleProxiesUpdate(obj) {
-        if (obj instanceof Proxies) {
-            var proxies = obj;
+        var proxies = obj.message;
+        if (proxies instanceof Proxies) {
             proxies.keySet().map(function(id) {
                 var window = Window.create(id);
                 window.proxy = proxies.get(id);
@@ -74,8 +73,9 @@ export class Main extends React.Component {
         }
     }
 
-    handleProxyUpdate(obj) {
-        if (obj instanceof Proxy) {
+    handleProxyUpdate(payload) {
+        var proxy = payload.message;
+        if (proxy instanceof Proxy) {
             var proxy = obj;
             var window = this.state.windows[proxy.id];
             window.proxy = proxy;
@@ -86,9 +86,9 @@ export class Main extends React.Component {
         }
     }
 
-    handleProxyInsert(obj) {
-        if (obj instanceof Proxy) {
-            var proxy = obj;
+    handleProxyInsert(payload) {
+        var proxy = payload.message;
+        if (proxy instanceof Proxy) {
             var window = Window.create(proxy.id);
             window.proxy = proxy;
             this.state.windows[proxy.id] = window;
@@ -99,9 +99,9 @@ export class Main extends React.Component {
         }
     }
 
-    handleProxyDelete(obj) {
-        if (obj instanceof Proxy) {
-            var proxy = obj;
+    handleProxyDelete(payload) {
+        var proxy = payload.message;
+        if (proxy instanceof Proxy) {
 
             delete this.state.windows[proxy.id];
 
@@ -115,61 +115,72 @@ export class Main extends React.Component {
         }
     }
 
-    handleTapeUpdate(obj) {
-        if (obj instanceof Tape) {
-            var tape = obj;
-            var window = this.state.window;
-
+    handleTapeUpdate(payload) {
+        var tape = payload.message;
+        if (tape instanceof Tape) {
+            var window = this.state.windows[payload.id];
             window.tape = tape;
-            this.setWindow(window);
+            this.state.windows[payload.id] = window;
+
+            if (this.state.window.id == payload.id) {
+                this.setWindow(window);
+            } else {
+                this.setWindows(this.state.windows);
+            }
         }
     }
 
-    handleFilterUpdate(obj) {
-        if (obj instanceof Filter) {
-            var filter = obj;
-            var window = this.state.window;
-
+    handleFilterUpdate(payload) {
+        var filter = payload.message;
+        if (filter instanceof Filter) {
+            var window = this.state.windows[payload.id];
             window.filter = filter;
-            this.setWindow(window);
+            this.state.windows[payload.id] = window;
+
+            if (this.state.window.id == payload.id) {
+                this.setWindow(window);
+            } else {
+                this.setWindows(this.state.windows);
+            }
         }
     }
 
-    handleRequestUpdate(obj) {
-        var request = obj;
+    handleRequestUpdate(payload) {
+        var request = payload.message;
         if (request instanceof Request) {
             var window = this.state.window;
-
             var original = window.message;
-            if (original.id == request.pastID) {
-
+            if (original.id == request.pastID && payload.id == window.id) {
                 window.message = request;
                 this.setWindow(window);
             }
         }
     }
 
-    handleResponseUpdate(obj) {
-        var response = obj;
+    handleResponseUpdate(payload) {
+        var response = payload.message;
         if (response instanceof Response) {
             var window = this.state.window;
             var original = window.message;
-            if (original.parent == response.parent && original.id == response.id) {
-
+            if (original.parent == response.parent
+                && original.id == response.id
+                && payload.id == window.id) {
                 window.message = response;
                 this.setWindow(window);
             }
         }
     }
 
-    handleEventUpdate(obj) {
-        if (obj instanceof Event) {
-            var event = obj;
-            console.log(event);
+    handleEventUpdate(payload) {
+        var event = payload.message;
+        if (event instanceof Event) {
+
             var request = event.request;
             var response = event.response;
 
-            var window = this.state.window;
+            var window = this.state.windows[payload.id];
+            console.log("HEY");
+            console.log(window);
             var tape = window.tape;
 
             if (tape.containsRequest(request.id)) {
@@ -184,8 +195,15 @@ export class Main extends React.Component {
                 }
             }
 
+            this.state.windows[payload.id] = window;
             window.events[event.id] = event;
-            this.setWindow(window);
+
+            if (this.state.window.id == payload.id) {
+                this.setWindow(window);
+            } else {
+                this.setWindows(this.state.windows);
+            }
+
         }
     }
 
@@ -271,6 +289,12 @@ export class Main extends React.Component {
         this.setState({
             windows: this.state.windows,
             window: window
+        })
+    }
+
+    setWindows(windows) {
+        this.setState({
+            windows: windows
         })
     }
 
