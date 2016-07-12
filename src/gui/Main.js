@@ -30,8 +30,8 @@ export class Main extends React.Component {
             windows: windows,
             window: windows[0],
         };
-        //this.socket = new Socket("ws://localhost:8090/ws/");
-        this.socket = new Socket("ws://" + location.host + "/ws/");
+        this.socket = new Socket("ws://localhost:8090/ws/");
+        //this.socket = new Socket("ws://" + location.host + "/ws/");
     }
 
     componentDidMount() {
@@ -76,13 +76,15 @@ export class Main extends React.Component {
     handleProxyUpdate(payload) {
         var proxy = payload.message;
         if (proxy instanceof Proxy) {
-            var proxy = obj;
             var window = this.state.windows[proxy.id];
             window.proxy = proxy;
+            this.state.windows[proxy.id] = window;
 
-            this.setState({
-                windows : this.state.windows
-            })
+            if (this.state.window.id == payload.id) {
+                this.setWindow(window);
+            } else {
+                this.setWindows(this.state.windows);
+            }
         }
     }
 

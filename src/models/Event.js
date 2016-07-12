@@ -41,6 +41,7 @@ export class Event {
         this.startTime = startTime;
         this.duration = duration;
         this.state = state;
+        this.viewed = false;
     }
 
     static parseJSON(source) {

@@ -6,7 +6,7 @@ import {render} from 'react-dom';
 
 import {TapeBox} from './components/TapeBox';
 import {MessageBox} from './components/MessageBox';
-import {EventBox} from './components/EventsBox';
+import {EventBox} from './components/EventsBox/EventsBox';
 
 import {Request} from '../../../models/Request';
 import {Response} from '../../../models/Response';
