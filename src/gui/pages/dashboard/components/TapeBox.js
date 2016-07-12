@@ -38,7 +38,7 @@ export class TapeBox extends React.Component {
             <div id="tapeContainer" className="box" >
                 <div className="header">
                     <div className="item left border">Tape</div>
-                    <div className="item right border" onClick={this.clearTape.bind(this)}><i className="fa fa-file-o" aria-hidden="true"></i></div>
+                    <div className="item right border" title="New Tape" onClick={this.clearTape.bind(this)}><i className="fa fa-file-o" aria-hidden="true"></i></div>
                 </div>
                 <div className="body">
                     <div className="column grow width">

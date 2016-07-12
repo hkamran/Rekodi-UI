@@ -240,7 +240,7 @@ export class MessageBox extends React.Component {
                         <i className="fa fa-floppy-o" aria-hidden="true" style={saveStyle} />
                     </div>
                     <div className="item right border"
-                         title="Save"
+                         title="Refresh"
                          onClick={this.resetMessage.bind(this)}
                          style={{fontSize: "10.5pt"}}
                         >

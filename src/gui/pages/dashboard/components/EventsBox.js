@@ -61,7 +61,7 @@ export class EventBox extends React.Component {
             <div id="eventsContainer" style={{height: "calc(50% - 5px)"}} className="box">
                 <div className="header">
                     <div className="item left border">Events</div>
-                    <div className="item right border" onClick={this.props.setEventsHandler.bind(this, {})}><i className="fa fa-eraser" aria-hidden="true" /></div>
+                    <div className="item right border" title="Clear Events" onClick={this.props.setEventsHandler.bind(this, {})}><i className="fa fa-eraser" aria-hidden="true" /></div>
                 </div>
                 <div className="body min">
                     <div  className="column grow width">

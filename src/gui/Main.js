@@ -179,8 +179,7 @@ export class Main extends React.Component {
             var response = event.response;
 
             var window = this.state.windows[payload.id];
-            console.log("HEY");
-            console.log(window);
+
             var tape = window.tape;
 
             if (tape.containsRequest(request.id)) {
