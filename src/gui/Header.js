@@ -17,6 +17,10 @@ export class Header extends React.Component {
         };
     }
 
+    componentDidMount() {
+        $('.tab.top.container.item').tipTop();
+    }
+
     showProxyWindow() {
         this.setState({
             showProxyWindow: true
