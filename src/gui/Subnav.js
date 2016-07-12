@@ -31,8 +31,12 @@ export class Subnav extends React.Component {
             console.info("Reading tape... " + uploadTapeInput.files[0].name);
             this.readTape();
         }.bind(this);
-
+        $(".subnav.button").tipTop();
     }
+
+    componentDidUpdate(prevProps, prevState){
+    }
+
 
     readTape() {
         var uploadTapeInput = document.getElementById("tapeUploadInput");
@@ -79,10 +83,18 @@ export class Subnav extends React.Component {
     }
 
     render() {
-
-
         var downloadTape = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.props.tape));
         var tapeUrl = "/rest/" + this.props.proxy.id + "/tape";
+
+        var proxyTitle;
+        if (State.cmp(this.props.filter.state, State.PROXY)) {
+            proxyTitle = "Proxy"
+        } else if (State.cmp(this.props.filter.state, State.RECORD)) {
+            proxyTitle = "Record";
+        } else {
+            proxyTitle = "Mocked";
+        }
+
         return (
             <div className="subnav">
                 {(function() {
@@ -114,7 +126,7 @@ export class Subnav extends React.Component {
                 }.bind(this))()}
                 <div className="resizer"></div>
                 <ul>
-                    <li className="subnav button" title="Recorder State" onClick={this.props.toggleStateHandler}>
+                    <li className="subnav button" data-title={"Recorder State: " + proxyTitle} onClick={this.props.toggleStateHandler}>
                         {
                             (function() {
                                 var src = "./assets/images/red_circle_button.png";
@@ -130,7 +142,7 @@ export class Subnav extends React.Component {
                             }.bind(this))()
                         }
                     </li>
-                    <li className="subnav button" title="Proxy Settings" onClick={this.props.toggleRedirectHandler}>
+                    <li className="subnav button" data-title={"Redirect: " + (this.props.filter.redirect ? "On" : "Off")} onClick={this.props.toggleRedirectHandler}>
                         {
                             (function() {
                                 var src = "./assets/images/toggle_off.png";
@@ -145,18 +157,18 @@ export class Subnav extends React.Component {
                         }
 
                     </li>
-                    <li className="subnav button" title="Import Tape" id="tapeUploadButton">
+                    <li className="subnav button" data-title="Import Tape" id="tapeUploadButton">
                         <i className="fa fa-download" aria-hidden="true" />
                         <input type="file" id="tapeUploadInput" style={{display: "none"}} onchange={this.readTape} />
                     </li>
-                    <li className="subnav button" title="Export Tape" >
+                    <li className="subnav button" data-title="Export Tape" >
                         <a href={tapeUrl} >
                             <div style={{height: "100%", width: "100%"}}>
                                 <i className="fa fa-upload" aria-hidden="true" />
                             </div>
                         </a>
                     </li>
-                    <li className="subnav button" onClick={this.showSettingsWindow.bind(this)}  title="Settings">
+                    <li className="subnav button" onClick={this.showSettingsWindow.bind(this)}  data-title="Settings">
                         <i className="fa fa-cog " aria-hidden="true" />
                     </li>
                 </ul>

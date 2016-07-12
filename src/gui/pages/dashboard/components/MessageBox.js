@@ -233,14 +233,14 @@ export class MessageBox extends React.Component {
                 <div className="header">
                     <div className="item left border">Message</div>
                     <div className="item right border"
-                         title="Save"
+                         data-title="Save"
                          onClick={this.updateMessage.bind(this)}
                          style={{fontSize: "11.4pt"}}
                         >
                         <i className="fa fa-floppy-o" aria-hidden="true" style={saveStyle} />
                     </div>
                     <div className="item right border"
-                         title="Refresh"
+                         data-title="Refresh"
                          onClick={this.resetMessage.bind(this)}
                          style={{fontSize: "10.5pt"}}
                         >
