@@ -323,6 +323,9 @@ export class Main extends React.Component {
                             toggleRedirectHandler={this.toggleRedirectHandler.bind(this)}
                             tape={this.state.window.tape}
                             updateFilterHandler={this.updateFilterHandler.bind(this)}
+                            updateProxyHandler={this.updateProxyHandler.bind(this)}
+                            updateTapeHandler={this.updateTapeHandler.bind(this)}
+                            proxy={this.state.window.proxy}
                     />
                     <div className="container">
                         <div className="content ">
@@ -338,9 +341,6 @@ export class Main extends React.Component {
                                        updateMessageHandler={this.updateMessageHandler.bind(this)}
                                        updateTapeHandler={this.updateTapeHandler.bind(this)}
                             />
-                            <div style={{height: "15px", width: "100%"}}>
-                                hlolll
-                            </div>
                         </div>
                     </div>
                 </div>

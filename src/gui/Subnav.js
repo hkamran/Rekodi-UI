@@ -7,6 +7,8 @@ import React from 'react';
 import {render} from 'react-dom';
 import {State} from './../models/Event';
 import {Filter} from './../models/Filter';
+import {Proxy} from './../models/Proxy';
+import {Tape} from './../models/Tape';
 import {Payload} from '../controllers/models/Payload';
 
 export class Subnav extends React.Component {
@@ -38,8 +40,10 @@ export class Subnav extends React.Component {
         var reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function (evt) {
-            console.log(evt.target.result);
-        };
+            var source = JSON.parse(evt.target.result);
+            var tape = Tape.parseJSON(source);
+            this.props.updateTapeHandler(Payload.actions.UPDATE, tape);
+        }.bind(this);
     }
 
     showSettingsWindow() {
@@ -62,16 +66,23 @@ export class Subnav extends React.Component {
         filter.host = hostname;
         filter.port = port;
 
+        var proxyName = this.refs.proxyNameInput.value;
+        var proxyPort = this.refs.proxyPortInput.value;
+
+        var proxy = this.props.proxy.clone();
+        proxy.name = proxyName;
+        proxy.port = proxyPort;
+
         this.closeSettingsWindow();
         this.props.updateFilterHandler(Payload.actions.UPDATE, filter);
-
+        this.props.updateProxyHandler(Payload.actions.UPDATE, proxy);
     }
 
     render() {
 
 
         var downloadTape = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.props.tape));
-
+        var tapeUrl = "/rest/" + this.props.proxy.id + "/tape";
         return (
             <div className="subnav">
                 {(function() {
@@ -88,6 +99,12 @@ export class Subnav extends React.Component {
                                 </label>
                                 <label>Port:
                                     <input ref="portInput" type="text" defaultValue={this.props.filter.port} />
+                                </label>
+                                <label>Proxy Name:
+                                    <input ref="proxyNameInput" type="text" defaultValue={this.props.proxy.name} />
+                                </label>
+                                <label>Proxy Port:
+                                    <input ref="proxyPortInput" type="text" defaultValue={this.props.proxy.port} />
                                 </label>
                             </div>
                             <a className="button" onClick={this.closeSettingsWindow.bind(this)}>Close</a>
@@ -133,7 +150,11 @@ export class Subnav extends React.Component {
                         <input type="file" id="tapeUploadInput" style={{display: "none"}} onchange={this.readTape} />
                     </li>
                     <li className="subnav button" title="Export Tape" >
-                        <i className="fa fa-upload" aria-hidden="true" />
+                        <a href={tapeUrl} >
+                            <div style={{height: "100%", width: "100%"}}>
+                                <i className="fa fa-upload" aria-hidden="true" />
+                            </div>
+                        </a>
                     </li>
                     <li className="subnav button" onClick={this.showSettingsWindow.bind(this)}  title="Settings">
                         <i className="fa fa-cog " aria-hidden="true" />

@@ -65,7 +65,7 @@ export class Header extends React.Component {
                     <a onClick={this.showInformation.bind(this)}><i className="fa fa-info-circle" /></a>
                 </div>
                 <div className="version">
-                    Rekodi 1.0.0
+                    Service Recorder 1.0.0
                 </div>
 
                 {(function() {

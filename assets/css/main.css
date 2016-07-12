@@ -229,6 +229,10 @@ html, body {
     filter: brightness(118%);
 }
 
+.subnav.button a:link,a:visited,a:hover,a:active {
+    color: #c5c5c5;
+}
+
 .editing {
     font-size: 9pt;
 }
