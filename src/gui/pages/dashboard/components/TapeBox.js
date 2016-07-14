@@ -12,12 +12,37 @@ import {Payload} from '../../../../controllers/models/Payload';
 
 export class TapeBox extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
     componentDidMount() {
-        animateTree();
+        //this.animateTree();
+    }
+
+    animateTree() {
+        $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+
+
+        var expand = $('.tree li.parent_li > div > i');
+        expand.unbind('click');
+        expand.on('click', function (e) {
+            var span = $(this).parent();
+            var children = span.parent('li.parent_li').find(' > ul > li');
+            if (children.is(":visible")) {
+                children.hide('fast');
+
+                span.attr('title', 'Expand this branch').find(' > i').addClass('fa-caret-down').removeClass('fa-caret-up');
+            } else {
+                children.show('fast');
+                span.attr('title', 'Collapse this branch').find(' > i').addClass('fa-caret-up').removeClass('fa-caret-down');
+            }
+            e.stopPropagation();
+        });
     }
 
     componentDidUpdate() {
-        animateTree();
+        //this.animateTree();
     }
 
     handleSearchFilter() {
@@ -33,6 +58,15 @@ export class TapeBox extends React.Component {
         this.props.setMessageHandler(null);
     }
 
+    toggleDropDown(id) {
+        var collapse = this.props.tree[id];
+        if (typeof collapse === 'undefined') {
+            this.props.setTreeHandler(id, false);
+            return;
+        }
+        this.props.setTreeHandler(id, !collapse);
+    }
+
     render() {
         return (
             <div id="tapeContainer" className="box" >
@@ -45,7 +79,7 @@ export class TapeBox extends React.Component {
                         <div className="search container">
                             <div className="search border">
                                 <div className="search icon wrapper">
-                                    <i aria-hidden="true" className="fa fa-search fa-lg"></i>
+                                    <i aria-hidden="true" className="fa fa-search fa-lg" />
                                 </div>
                                 <div className="search input wrapper">
                                     <input style={{width: "calc(100% - 44px)", border: "0px", paddingTop: "1px"}} ref="filterTextInput" onChange={this.handleSearchFilter.bind(this)}
@@ -83,23 +117,33 @@ export class TapeBox extends React.Component {
 
                                         var isMessage = request.equals(this.props.message);
 
+
+                                        var collapse = this.props.tree[id];
+                                        if (typeof collapse === 'undefined') {
+                                            collapse = true;
+                                        }
+
+
+                                        var childStyle = collapse ? "none" : "block";
+                                        var caretClass = collapse ? "fa fa-caret-down" : "fa fa-caret-up";
+
                                         return (
                                             <ul key={i} className="incoming">
                                                 <li>
                                                     <div className={isMessage ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
-                                                        <i className="fa fa-caret-down" aria-hidden="true" style={{padding: "6px"}} />
-                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)}>Request: {request.id}</span>
+                                                        <i onClick={this.toggleDropDown.bind(this, request.id)} className={caretClass} aria-hidden="true" style={{padding: "6px", cursor: "pointer"}} />
+                                                        <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} style={{cursor: "pointer"}}>Request: {request.id}</span>
                                                     </div>
-                                                    <ul>
+                                                    <ul style={{"display": childStyle}}>
                                                         {
                                                             responses.map(function(response, i) {
                                                                 var isMessage = response.equals(this.props.message);
 
                                                                 return (
-                                                                    <li key={i} className="message">
+                                                                    <li key={i}>
                                                                         <div className={isMessage ? "http label highlight": ""} style={{whiteSpace: "nowrap", padding: "0px"}}>
                                                                             <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)}
-                                                                                  style={{marginLeft: "6px"}}>Response: {response.id}</span>
+                                                                                  style={{marginLeft: "6px", cursor: "pointer"}}>Response: {response.id}</span>
                                                                         </div>
                                                                     </li>
                                                                 )

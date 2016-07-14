@@ -13,12 +13,13 @@ export class Window {
 
     constructor(id) {
         this.id = id;
-        this.proxy = new Proxy(0, 9090,"???", "START");
+        this.proxy = new Proxy(0, 9090, "???", "START");
         this.tape = new Tape();
-        this.message =   null;
+        this.message = null;
         this.events = {};
         this.search = "";
-        this.filter = new Filter(0, 80,"localhost", State.PROXY, true);
+        this.filter = new Filter(0, 80, "localhost", State.PROXY, true);
+        this.tree = {};
     }
 
     static create(id) {

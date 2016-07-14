@@ -81,7 +81,9 @@ export class Dashboard extends React.Component {
 
                              setSearchHandler={this.props.setSearchHandler}
                              setMessageHandler={this.props.setMessageHandler}
+                             tree={this.props.tree}
 
+                             setTreeHandler={this.props.setTreeHandler}
                              resetMessageHandler={this.resetMessageHandler.bind(this)}
                     />
                     <div id="analysisSplitter" className="splitter horizontal">

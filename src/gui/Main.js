@@ -308,6 +308,11 @@ export class Main extends React.Component {
         return proxies;
     }
 
+    setTreeHandler(id, value) {
+        this.state.window.tree[id] = value;
+        this.setWindow(this.state.window);
+    }
+
     render() {
         return (
             <div className="grow height width">
@@ -334,7 +339,9 @@ export class Main extends React.Component {
                                        events={this.state.window.events}
                                        message={this.state.window.message}
                                        search={this.state.window.search}
+                                       tree={this.state.window.tree}
 
+                                       setTreeHandler={this.setTreeHandler.bind(this)}
                                        setMessageHandler={this.setMessageHandler.bind(this)}
                                        setSearchHandler={this.setSearchHandler.bind(this)}
                                        setEventsHandler={this.setEventsHandler.bind(this)}
