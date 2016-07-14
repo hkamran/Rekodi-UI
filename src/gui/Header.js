@@ -17,10 +17,6 @@ export class Header extends React.Component {
         };
     }
 
-    componentDidMount() {
-        $('.tab.top.container.item').tipTop();
-    }
-
     showProxyWindow() {
         this.setState({
             showProxyWindow: true
@@ -69,7 +65,7 @@ export class Header extends React.Component {
                     <a onClick={this.showInformation.bind(this)}><i className="fa fa-info-circle" /></a>
                 </div>
                 <div className="version">
-                    Service Recorder 1.0.0
+                    Rekodi 1.0.0
                 </div>
 
                 {(function() {
@@ -113,14 +109,30 @@ export class Header extends React.Component {
                 }.bind(this))()}
 
                 <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #353535"}}>
-                    <div className="tab wrapper">
+                    <div className="tab wrapper" style={{zIndex: "11"}}>
                         <div className="tab top selected" style={{borderBottom: "1px solid #858585", height: "23px", borderRight: "1px solid #858585"}}>
                             <div className="tab top container items">
                                 <div data-title="Add Proxy" className="tab top container item left" onClick={this.showProxyWindow.bind(this)} style={{textAlign:"center"}} >
                                     <img style={{marginTop: "5px"}} src="./assets/images/plus.png" />
                                 </div>
-                                <div data-title="View Proxies" className="tab top container item right" style={{textAlign:"center"}}>
-                                    <img style={{marginTop: "5px"}} src="./assets/images/list.png" />
+                                <div className="tab top container item right dropdown trigger" style={{textAlign:"center"}}>
+                                    <div id="listProxiesButton" data-title="View Proxies" style={{height: "100%", width: "100%"}}>
+                                        <img style={{marginTop: "5px"}} src="./assets/images/list.png" />
+                                    </div>
+                                    <div className="header dropdown">
+                                        <div className="inset">
+                                            <ul>
+                                                {
+                                                    Object.keys(this.props.proxies).sort().map(function(id, i) {
+                                                        var proxy = this.props.proxies[id];
+                                                        return (
+                                                            <li key={i} onClick={this.props.setSelectedWindow.bind(this, id)}>{proxy.name}</li>
+                                                        );
+                                                    }.bind(this))
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

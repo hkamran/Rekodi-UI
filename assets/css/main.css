@@ -317,3 +317,64 @@ html, body {
     color: #bbb;
     cursor:pointer;
 }
+
+.header.dropdown {
+    position: relative;
+    top: 1px;
+    left: -1px;
+    border: 1px solid #8a8a8a;
+    display: none;
+    background: #e1e1e1  url("/assets/images/dropdown_bg.png") repeat-x scroll 0 0;
+
+    -webkit-box-shadow: 3px 6px 5px -1px rgba(0,0,0,0.13);
+    -moz-box-shadow: 3px 6px 5px -1px rgba(0,0,0,0.13);
+    box-shadow: 3px 6px 5px -1px rgba(0,0,0,0.13);
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.header.dropdown .inset {
+    height: 100%;
+    width: 100%;
+    padding-top: 3px;
+    box-sizing: border-box;
+}
+
+.header.dropdown ul {
+
+    padding: 0px;
+    margin: 0px;
+    list-style-type:none;
+    max-width: 200px;
+    min-width: 120px;
+    display:inline-block;
+}
+
+.header .dropdown.trigger:hover .header.dropdown {
+    display:inline-block;
+}
+
+.header.dropdown li:first-child {
+    border-top: 0px;
+}
+
+.header.dropdown li:last-child {
+    border-bottom: 0px;
+}
+
+.header.dropdown li {
+    border-top: 1px solid #edecec;
+    border-bottom: 1px solid #b9b9b9;
+    font-size: 9pt;
+    color: #6f6f6f;
+    padding: 5px;
+    text-align: left;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+}
+
+.header.dropdown li:hover {
+    background: #ececec;
+}
