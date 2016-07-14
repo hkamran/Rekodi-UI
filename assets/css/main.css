@@ -324,7 +324,7 @@ html, body {
     left: -1px;
     border: 1px solid #8a8a8a;
     display: none;
-    background: #e1e1e1  url("/assets/images/dropdown_bg.png") repeat-x scroll 0 0;
+    background: #e6e6e6  url("/assets/images/dropdown_bg.png") repeat-x scroll 0 0;
 
     -webkit-box-shadow: 3px 6px 5px -1px rgba(0,0,0,0.13);
     -moz-box-shadow: 3px 6px 5px -1px rgba(0,0,0,0.13);
