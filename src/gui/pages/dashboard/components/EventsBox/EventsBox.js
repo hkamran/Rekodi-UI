@@ -85,7 +85,6 @@ export class EventBox extends React.Component {
                                         {
                                             Object.keys(this.props.events).sort().map(function (id, i, props) {
                                                 var event = this.props.events[id];
-                                                console.log(Object.keys(this.props.events));
                                                 return (
                                                     <EventRow resetMessageHandler={this.props.resetMessageHandler}
                                                               setMessageHandler={this.props.setMessageHandler}

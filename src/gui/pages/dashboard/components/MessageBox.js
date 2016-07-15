@@ -19,7 +19,8 @@ export class MessageBox extends React.Component {
             message: null,
             dirty: false,
             newKey: false,
-            viewChange: false
+            viewChange: false,
+            editable: false
         }
         this.dom = {};
     }
@@ -61,6 +62,12 @@ export class MessageBox extends React.Component {
             this.setDirty(false);
             this.setViewChange(false);
             this.setMessage(message);
+
+            if (State.cmp(message.state, State.RECORD)) {
+                this.setEditable(true);
+            } else {
+                this.setEditable(false);
+            }
         }
     }
 
@@ -167,6 +174,12 @@ export class MessageBox extends React.Component {
         });
     }
 
+    setEditable(flag) {
+        this.setState({
+           editable: flag
+        });
+    }
+
     editingNewHeaderFinished() {
         var inputElem = ReactDOM.findDOMNode(this.refs.newKey);
         var value = inputElem.value;
@@ -246,8 +259,6 @@ export class MessageBox extends React.Component {
                         >
                         <i className="fa fa-refresh" />
                     </div>
-
-
                 </div>
                 <div className="body min">
                     <div id="headerContainer" className="column" style={{width: "calc(50% - 0.5px)"}}>
@@ -262,9 +273,9 @@ export class MessageBox extends React.Component {
                                         if (message == null) {
                                             return;
                                         }
-
                                         if (message instanceof Response) {
                                             //id, protocol, status, content, contentLength, contentType)
+
                                             return (
                                                 <ul>
                                                     <li>
@@ -275,6 +286,7 @@ export class MessageBox extends React.Component {
                                                                 text={message.protocol}
                                                                 paramName="protocol"
                                                                 change={this.dataChangeResponse.bind(this)}
+                                                                isDisabled={!this.state.editable}
                                                             />
                                                         </div>
                                                     </li>
@@ -307,11 +319,13 @@ export class MessageBox extends React.Component {
                                                                 text={message.status + ""}
                                                                 paramName="status"
                                                                 change={this.dataChangeResponse.bind(this)}
+                                                                isDisabled={!this.state.editable}
                                                             />
                                                         </div>
                                                     </li>
                                                     {
                                                         Object.keys(message.headers).sort().map(function (key, i) {
+
                                                             return (
                                                                 <li key={i}>
                                                                     <div className="properties close" onClick={this.dataDeleteHeaderKey.bind(this, key)}><i className="fa fa-times" /></div>
@@ -322,6 +336,7 @@ export class MessageBox extends React.Component {
                                                                             paramName={key}
                                                                             change={this.dataChangeHeaderKey.bind(this)}
                                                                             minLength={0}
+                                                                            isDisabled={!this.state.editable}
                                                                         />:
                                                                     </div>
                                                                     <div className="properties value" style={{cursor: "text"}}>
@@ -332,6 +347,7 @@ export class MessageBox extends React.Component {
                                                                             paramName={key}
                                                                             minLength={0}
                                                                             change={this.dataChangeHeaderValue.bind(this)}
+                                                                            isDisabled={!this.state.editable}
                                                                         />
                                                                     </div>
                                                                 </li>
@@ -348,9 +364,18 @@ export class MessageBox extends React.Component {
                                                         </div>
                                                         <div className="properties value" style={{cursor: "text"}}></div>
                                                     </li>
-                                                    <li>
-                                                        <div className="properties add" onClick={this.editingNewHeaderShow.bind(this)}></div>
-                                                    </li>
+                                                    {
+                                                        (function () {
+                                                            if (this.state.editable) {
+                                                                return (
+                                                                    <li>
+                                                                        <div className="properties add"
+                                                                             onClick={this.editingNewHeaderShow.bind(this)}></div>
+                                                                    </li>
+                                                                )
+                                                            }
+                                                        }.bind(this))()
+                                                    }
                                                 </ul>
                                             )
                                         } else if (message instanceof Request) {
@@ -366,6 +391,7 @@ export class MessageBox extends React.Component {
                                                                 text={message.protocol}
                                                                 paramName="protocol"
                                                                 change={this.dataChangeRequest.bind(this)}
+                                                                isDisabled={!this.state.editable}
                                                             />
                                                         </div>
                                                     </li>
@@ -377,6 +403,7 @@ export class MessageBox extends React.Component {
                                                                 text={message.method}
                                                                 paramName="method"
                                                                 change={this.dataChangeRequest.bind(this)}
+                                                                isDisabled={!this.state.editable}
                                                             />
                                                         </div>
                                                     </li>
@@ -388,6 +415,7 @@ export class MessageBox extends React.Component {
                                                                 text={message.uri}
                                                                 paramName="uri"
                                                                 change={this.dataChangeRequest.bind(this)}
+                                                                isDisabled={!this.state.editable}
                                                             />
                                                         </div>
                                                     </li>
@@ -398,6 +426,7 @@ export class MessageBox extends React.Component {
                                                                     paddingTop: "10px"
                                                                 };
                                                             }
+
                                                             return (
                                                                 <li key={i} style={style}>
                                                                     <div className="properties close" onClick={this.dataDeleteHeaderKey.bind(this, key)}><i className="fa fa-times" /></div>
@@ -408,6 +437,7 @@ export class MessageBox extends React.Component {
                                                                             paramName={key}
                                                                             change={this.dataChangeHeaderKey.bind(this)}
                                                                             minLength={0}
+                                                                            isDisabled={!this.state.editable}
                                                                         />:
                                                                     </div>
                                                                     <div className="properties value" style={{cursor: "text"}}>
@@ -418,6 +448,7 @@ export class MessageBox extends React.Component {
                                                                             paramName={key}
                                                                             minLength={0}
                                                                             change={this.dataChangeHeaderValue.bind(this)}
+                                                                            isDisabled={!this.state.editable}
                                                                         />
                                                                     </div>
                                                                 </li>
@@ -434,9 +465,24 @@ export class MessageBox extends React.Component {
                                                         </div>
                                                         <div className="properties value" style={{cursor: "text"}}></div>
                                                     </li>
-                                                    <li>
-                                                        <div className="properties add" onClick={this.editingNewHeaderShow.bind(this)}></div>
-                                                    </li>
+
+                                                    {
+                                                        (function () {
+                                                            if (this.state.editable) {
+                                                                return (
+                                                                    <li>
+                                                                        <div className="properties add" onClick={this.editingNewHeaderShow.bind(this)}></div>
+                                                                    </li>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                    <li>
+                                                                        <div className="properties add" style={{cursor: "inherit"}}></div>
+                                                                    </li>
+                                                                )
+                                                            }
+                                                        }.bind(this))()
+                                                    }
                                                     <li>
                                                         <div className="properties title" style={{cursor: "not-allowed"}}>Match Type:</div>
                                                         <div className="properties value">{message.matchType}</div>
