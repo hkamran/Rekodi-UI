@@ -78,7 +78,7 @@ export class Dashboard extends React.Component {
                              message={this.props.message}
                              search={this.props.search}
                              updateTapeHandler={this.props.updateTapeHandler}
-
+                             updateMessageHandler={this.props.updateMessageHandler}
                              setSearchHandler={this.props.setSearchHandler}
                              setMessageHandler={this.props.setMessageHandler}
                              tree={this.props.tree}

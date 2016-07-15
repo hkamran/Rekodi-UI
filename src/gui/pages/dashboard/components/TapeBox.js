@@ -125,7 +125,7 @@ export class TapeBox extends React.Component {
 
 
                                         var childStyle = collapse ? "block" : "none";
-                                        var caretClass = collapse ? "fa fa-caret-down" : "fa fa-caret-up";
+                                        var caretClass = collapse ? "fa fa-caret-up" : "fa fa-caret-down";
 
                                         return (
                                             <ul key={i} className="incoming">
