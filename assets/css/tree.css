@@ -108,3 +108,20 @@
 .message {
     display: none;
 }
+
+.tree.options {
+    height: 15px;
+    width: 15px;
+    padding: 0px;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #cd3737;
+}
+
+.tree.options:hover .fa {
+    display: block;
+}
+
+.tree.options .fa {
+    display: none;
+}

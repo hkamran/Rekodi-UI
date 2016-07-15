@@ -67,6 +67,14 @@ export class TapeBox extends React.Component {
         this.props.setTreeHandler(id, !collapse);
     }
 
+    deleteRequest(request) {
+        this.props.updateMessageHandler(Payload.actions.DELETE, request);
+    }
+
+    deleteResponse(response) {
+        this.props.updateMessageHandler(Payload.actions.DELETE, response);
+    }
+
     render() {
         return (
             <div id="tapeContainer" className="box" >
@@ -134,6 +142,7 @@ export class TapeBox extends React.Component {
                                                         <i onClick={this.toggleDropDown.bind(this, request.id)} className={caretClass} aria-hidden="true" style={{padding: "6px", cursor: "pointer"}} />
                                                         <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, request)} style={{cursor: "pointer"}}>Request: {request.id}</span>
                                                     </div>
+                                                    <span className="tree options" onClick={this.deleteRequest.bind(this, request)}><i className="fa fa-times" /></span>
                                                     <ul style={{"display": childStyle}}>
                                                         {
                                                             responses.map(function(response, i) {
@@ -145,6 +154,7 @@ export class TapeBox extends React.Component {
                                                                             <span onClick={isMessage ? this.props.resetMessageHandler : this.props.setMessageHandler.bind(this, response)}
                                                                                   style={{marginLeft: "6px", cursor: "pointer"}}>Response: {response.id}</span>
                                                                         </div>
+                                                                        <span className="tree options" onClick={this.deleteResponse.bind(this, response)}><i className="fa fa-times" /></span>
                                                                     </li>
                                                                 )
                                                             }.bind(this))
@@ -154,7 +164,6 @@ export class TapeBox extends React.Component {
                                             </ul>
                                         )
                                     }, this)
-
                                 }
                             </div>
                         </div>

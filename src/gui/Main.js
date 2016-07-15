@@ -44,6 +44,8 @@ export class Main extends React.Component {
         this.socket.setHandlerForProxyDelete(this.handleProxyDelete.bind(this));
         this.socket.setHandlerForProxyInsert(this.handleProxyInsert.bind(this));
         this.socket.setHandlerForProxiesUpdate(this.handleProxiesUpdate.bind(this));
+        this.socket.setHandlerForRequestDelete(this.handleRequestDelete.bind(this));
+        this.socket.setHandlerForResponseDelete(this.handleResponseDelete.bind(this));
         this.socket.start();
     }
 
@@ -152,8 +154,26 @@ export class Main extends React.Component {
         if (request instanceof Request) {
             var window = this.state.window;
             var original = window.message;
+
             if (original.id == request.pastID && payload.id == window.id) {
                 window.message = request;
+                this.setWindow(window);
+            }
+        }
+    }
+
+    handleRequestDelete(payload) {
+        var request = payload.message;
+        if (request instanceof Request) {
+            var window = this.state.window;
+            var original = window.message;
+
+            if (window.message == null) {
+                return;
+            }
+
+            if (original.id == request.pastID && payload.id == window.id) {
+                window.message = null;
                 this.setWindow(window);
             }
         }
@@ -164,12 +184,34 @@ export class Main extends React.Component {
         if (response instanceof Response) {
             var window = this.state.window;
             var original = window.message;
+
             if (original.parent == response.parent
                 && original.id == response.id
                 && payload.id == window.id) {
                 window.message = response;
                 this.setWindow(window);
             }
+
+        }
+    }
+
+    handleResponseDelete(payload) {
+        var response = payload.message;
+        if (response instanceof Response) {
+            var window = this.state.window;
+            var original = window.message;
+
+            if (window.message == null) {
+                return;
+            }
+
+            if (original.parent == response.parent
+                && original.id == response.id
+                && payload.id == window.id) {
+                window.message = null;
+                this.setWindow(window);
+            }
+
         }
     }
 

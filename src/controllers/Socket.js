@@ -34,8 +34,16 @@ export class Socket {
         this.requestUpdateHandler = callback;
     }
 
+    setHandlerForRequestDelete(callback) {
+        this.requestDeleteHandler = callback;
+    }
+
     setHandlerForResponseUpdate(callback) {
         this.responseUpdateHandler = callback;
+    }
+
+    setHandlerForResponseDelete(callback) {
+        this.responseDeleteHandler = callback;
     }
 
     setHandlerForProxyUpdate(callback) {
@@ -72,9 +80,21 @@ export class Socket {
         } else if (Payload.types.cmp(payload.type, Payload.types.EVENT)) {
             this.eventUpdateHandler(payload);
         } else if (Payload.types.cmp(payload.type, Payload.types.REQUEST)) {
-            this.requestUpdateHandler(payload);
+
+            if (Payload.actions.cmp(payload.action, Payload.actions.UPDATE)) {
+                this.requestUpdateHandler(payload);
+            } else if (Payload.actions.cmp(payload.action, Payload.actions.DELETE)) {
+                this.requestDeleteHandler(payload);
+            }
+
         } else if (Payload.types.cmp(payload.type, Payload.types.RESPONSE)) {
-            this.responseUpdateHandler(payload);
+
+            if (Payload.actions.cmp(payload.action, Payload.actions.UPDATE)) {
+                this.responseUpdateHandler(payload);
+            } else if (Payload.actions.cmp(payload.action, Payload.actions.DELETE)) {
+                this.responseDeleteHandler(payload);
+            }
+
         } else if (Payload.types.cmp(payload.type, Payload.types.PROXY)) {
 
             if (Payload.actions.cmp(payload.action, Payload.actions.UPDATE)) {
