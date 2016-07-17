@@ -6,6 +6,7 @@ var uglify = require('gulp-uglify');
 var inject = require('gulp-inject-string');
 var deleteLines = require('gulp-delete-lines');
 var concat = require('gulp-concat');
+var runSequence = require('run-sequence');
 
 var src = {
   images: ['./assets/images/*.png', '.assets/images/*.ico'],
