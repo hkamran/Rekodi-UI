@@ -2,11 +2,15 @@ var gulp = require('gulp');
 var concatCss = require('gulp-concat-css');
 var webpack = require('gulp-webpack');
 var del = require('del');
+var uglify = require('gulp-uglify');
+var inject = require('gulp-inject-string');
+var deleteLines = require('gulp-delete-lines');
 
 var src = {
   images: './assets/images/*.png',
   css:    './assets/css/*.css',
   libs:	  './libs/**/**'
+  
 };
 
 gulp.task('clean', function() {
@@ -31,22 +35,20 @@ gulp.task('css', function() {
 
 gulp.task('app', function() {
   return gulp.src('./src/App.js')
-    .pipe(webpack({
-		output: {
-			filename: 'app.js'
-		},
-		module: {
-			loaders: [{
-				test: /\.jsx?$/,
-				exclude: /node_modules/, 
-				loader: 'babel',
-				query: {
-					presets: ['es2015', 'react']
-				}
-			}]
-		}
-	}))
+    .pipe(webpack( require('./webpack.config.js') ))
+	.pipe(uglify())
     .pipe(gulp.dest('target'));
 });
 
-gulp.task('default', ['images', 'css', 'libs', 'app']);
+gulp.task('index', function () {
+  return gulp.src('index.html') 
+    .pipe(deleteLines({
+      'filters': [
+      /<link\s+rel=["']/i
+      ]
+    }))
+	.pipe(inject.before('</head>', '<link rel="stylesheet" href="./assets/styles/app.css"/>'))
+	.pipe(gulp.dest('target'));
+});
+
+gulp.task('default', ['images', 'css', 'libs', 'app', 'index']);
