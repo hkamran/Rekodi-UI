@@ -24,14 +24,14 @@ gulp.task('images', function() {
 
 gulp.task('libs', function() {
 	return gulp.src(src.libs)
-	.pipe(concat('libs.js'))
-	.pipe(uglify())
-	.pipe(gulp.dest('target/assets/libs'));
+	.pipe(gulp.dest('target/libs'));
 });
 
 gulp.task('css', function() {
 	return gulp.src(src.css)
-	.pipe(concatCss("styles/app.css"))
+	.pipe(concatCss("styles/app.css", {
+		rebaseUrls: false
+	}))
 	.pipe(gulp.dest('target/assets'));
 });
 
@@ -51,12 +51,24 @@ gulp.task('index', function () {
     }))
 	.pipe(deleteLines({
       'filters': [
-	  /<script\s+src=".\/libs/i
+      /<script\s+src=".\/libs\/react/i
       ]
     }))
-	.pipe(inject.before('</head>', '    <link rel="stylesheet" href="./assets/styles/app.css"/>'))
-	.pipe(inject.after('<body>', '     <script src="./assets/libs/libs.js"></script>'))
+	.pipe(inject.before('</head>', '<script src="./libs/react/prod/react-15.2.1.min.js"></script>'))
+	.pipe(inject.before('</head>', '<script src="./libs/react/prod/react-dom-15.2.1.min.js"></script>'))
+	.pipe(inject.before('</head>', '<link rel="stylesheet" href="./assets/styles/app.css"/>'))
 	.pipe(gulp.dest('target'));
 });
 
-gulp.task('default', ['images', 'css', 'libs', 'app', 'index']);
+gulp.task('set-prod-node-env', function() {
+    return process.env.NODE_ENV = 'production';
+});
+
+gulp.task('build', ['images', 'css', 'libs', 'app', 'index']);
+
+gulp.task('default', function(callback) {
+	runSequence('clean',
+				'set-prod-node-env',
+				'build',
+				 callback);
+});

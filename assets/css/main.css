@@ -134,7 +134,7 @@ html, body {
     background: #353535;
     border: 0px;
     border-right: 1px solid #2f2f2f;
-    background-image: url("../images/subnav_arrow_back.png");
+    background-image: url("/assets/images/subnav_arrow_back.png");
     background-repeat: no-repeat;
     background-position: 94% 37%;
 }
