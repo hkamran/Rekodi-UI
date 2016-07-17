@@ -4,6 +4,7 @@ html, body {
     font-family: Helvetica, Arial, sans-serif ;
     font-style: normal;
     font-weight: normal;
+    height: 100%;
 }
 
 .breaker {
@@ -136,11 +137,6 @@ html, body {
     background-image: url("../images/subnav_arrow_back.png");
     background-repeat: no-repeat;
     background-position: 94% 37%;
-}
-
-.CodeMirror {
-    height: 100%;
-    width: 100%;
 }
 
 .example-enter {
