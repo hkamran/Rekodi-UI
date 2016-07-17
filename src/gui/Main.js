@@ -30,8 +30,8 @@ export class Main extends React.Component {
             windows: windows,
             window: windows[0],
         };
-        //this.socket = new Socket("ws://localhost:8090/ws/");
-        this.socket = new Socket("ws://" + location.host + "/ws/");
+        this.socket = new Socket("ws://localhost:8090/ws/");
+        //this.socket = new Socket("ws://" + location.host + "/ws/");
     }
 
     componentDidMount() {
@@ -68,7 +68,7 @@ export class Main extends React.Component {
                 this.state.windows[id] = window;
             }.bind(this));
 
-            if (!(0 in proxies)) {
+            if (!(proxies.contains(0))) {
                 delete this.state.windows[0];
             }
 

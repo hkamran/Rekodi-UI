@@ -25,6 +25,10 @@ export class Proxies {
         return Object.keys(this.proxies);
     }
 
+    contains(id) {
+        return id in this.proxies;
+    }
+
     static parseJSON(source) {
         var keys = Object.keys(source);
         var proxies = new Proxies();
