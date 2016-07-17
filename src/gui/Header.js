@@ -57,7 +57,7 @@ export class Header extends React.Component {
 
     render() {
         return (
-            <div className="header" style={{height: "75px", position: "relative", background: "#313131"
+            <div className="header" style={{height: "75px", position: "relative", background: "url('./assets/images/logo.png') 10px 7px no-repeat fixed #353535"
 
             }}>
 

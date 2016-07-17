@@ -253,6 +253,10 @@ html, body {
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
 }
 
+.settings a {
+    color: #4b4b4b;
+}
+
 .settings label {
     color: #696969;
     display: block;
@@ -290,6 +294,10 @@ html, body {
 
 }
 
+.settings .button:hover {
+    background: #eee;
+}
+
 .version {
     position: absolute;
     right: 5px;
@@ -309,12 +317,12 @@ html, body {
 }
 
 .header.icons a {
-    color: #999;
+    color: #a6a5a5;
     cursor:pointer;
 }
 
 .header.icons a:hover {
-    color: #bbb;
+    color: #c8c8c8;
     cursor:pointer;
 }
 
