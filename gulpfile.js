@@ -9,7 +9,7 @@ var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 
 var src = {
-  images: ['./assets/images/*.png', '.assets/images/*.ico'],
+  images: ['./assets/images/*.png', './assets/images/*.ico'],
   css:    './assets/css/*.css',
   libs:	  './libs/**/**'
 };
