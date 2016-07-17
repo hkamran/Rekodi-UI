@@ -68,9 +68,14 @@ export class Main extends React.Component {
                 this.state.windows[id] = window;
             }.bind(this));
 
+            if (!(0 in proxies)) {
+                delete this.state.windows[0];
+            }
+
+            var keys = Object.keys(this.state.windows);
             this.setState({
                 windows : this.state.windows,
-                window: this.state.windows[this.state.window.id]
+                window: this.state.windows[keys[0]]
             })
         }
     }
