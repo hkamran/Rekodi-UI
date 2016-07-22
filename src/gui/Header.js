@@ -108,7 +108,7 @@ export class Header extends React.Component {
                     )
                 }.bind(this))()}
 
-                <div style={{position: "absolute", bottom: "0px", overflow: "hidden", height: "29px", width: "100%", borderTop: "1px solid #353535"}}>
+                <div style={{position: "absolute", bottom: "0px", height: "29px", width: "100%", borderTop: "1px solid #353535"}}>
                     <div className="tab wrapper" style={{zIndex: "11"}}>
                         <div className="tab top selected" style={{borderBottom: "1px solid #858585", height: "23px", borderRight: "1px solid #858585"}}>
                             <div className="tab top container items">
@@ -138,6 +138,7 @@ export class Header extends React.Component {
                         </div>
                         <div className="tab bottom unselected"></div>
                     </div>
+                    <div style={{width: "calc(100% - 61px", height: "100%", float: "left", position: "relative", overflow: "hidden"}} >
                     {
                         Object.keys(this.props.proxies).sort().map(function(id, i) {
                             var proxy = this.props.proxies[id];
@@ -197,7 +198,7 @@ export class Header extends React.Component {
 
                         }.bind(this))
                     }
-
+                    </div>
                     <div className="tab bg">
                         <div className="top border" >
                             <div className="top container">
