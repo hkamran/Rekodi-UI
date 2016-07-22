@@ -108,7 +108,7 @@ export class Header extends React.Component {
                     )
                 }.bind(this))()}
 
-                <div style={{position: "absolute", bottom: "0px", width: "100%", borderTop: "1px solid #353535"}}>
+                <div style={{position: "absolute", bottom: "0px", overflow: "hidden", height: "29px", width: "100%", borderTop: "1px solid #353535"}}>
                     <div className="tab wrapper" style={{zIndex: "11"}}>
                         <div className="tab top selected" style={{borderBottom: "1px solid #858585", height: "23px", borderRight: "1px solid #858585"}}>
                             <div className="tab top container items">
