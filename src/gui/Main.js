@@ -236,7 +236,8 @@ export class Main extends React.Component {
                 event.request = request;
             }
 
-            if (State.cmp(event.state, State.RECORD)) {
+            if (State.cmp(event.state, State.RECORD) ||
+                (State.cmp(event.state, State.MOCK) && window.filter.recordMock)) {
                 if (response != null) {
                     tape.addRequest(request);
                     tape.addResponse(request.id, response);

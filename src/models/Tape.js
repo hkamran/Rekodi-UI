@@ -66,7 +66,9 @@ export class Tape {
 
         if (typeof val === 'undefined') {
         } else {
-            this.requests[id].responses.push(response);
+            if (typeof this.requests[id].responses[response.id] === 'undefined') {
+                this.requests[id].responses.push(response);
+            }
         }
     }
 

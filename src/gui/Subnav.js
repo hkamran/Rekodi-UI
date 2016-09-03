@@ -65,10 +65,12 @@ export class Subnav extends React.Component {
     saveSettings() {
         var hostname = this.refs.hostnameInput.value;
         var port = this.refs.portInput.value;
+        var recordMock = this.refs.proxyRecordMock.checked;
 
         var filter = this.props.filter.clone();
         filter.host = hostname;
         filter.port = port;
+        filter.recordMock = recordMock;
 
         var proxyName = this.refs.proxyNameInput.value;
         var proxyPort = this.refs.proxyPortInput.value;
@@ -117,6 +119,13 @@ export class Subnav extends React.Component {
                                 </label>
                                 <label>Proxy Port:
                                     <input ref="proxyPortInput" type="text" defaultValue={this.props.proxy.port} />
+                                </label>
+                                <label>
+                                    <span>
+                                        <input style={{width: "10px",marginLeft: "0px", marginRight: "5px", marginTop: "0px"}}
+                                               ref="proxyRecordMock" type="checkbox" defaultChecked={this.props.filter.recordMock} />
+                                    Record While Mocked
+                                    </span>
                                 </label>
                             </div>
                             <a className="button" onClick={this.closeSettingsWindow.bind(this)}>Close</a>

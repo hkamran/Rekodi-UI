@@ -4,12 +4,13 @@
 import {State} from './Event';
 
 export class Filter {
-    constructor(id, port, host, state, redirect) {
+    constructor(id, port, host, state, redirect, recordMock) {
         this.id = id;
         this.port = port;
         this.host = host;
         this.state = state;
         this.redirect = redirect;
+        this.recordMock = recordMock;
     }
 
     static parseJSON(source) {
@@ -19,9 +20,10 @@ export class Filter {
             var port = source["port"];
             var state = State.valueOf(source["state"]);
             var redirect = source["redirect"];
+            var recordMock = source["recordMock"];
 
 
-            return new Filter(id, port, host, state, redirect);
+            return new Filter(id, port, host, state, redirect, recordMock);
 
         } catch (err) {
             console.error("Unable to parse settings ", source);
@@ -29,6 +31,6 @@ export class Filter {
     }
 
     clone() {
-        return new Filter(this.id, this.port, this.host, this.state, this.redirect);
+        return new Filter(this.id, this.port, this.host, this.state, this.redirect, this.recordMock);
     }
 }

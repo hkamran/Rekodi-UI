@@ -83,7 +83,9 @@ export class EventBox extends React.Component {
                                     <table id="tBody" cellPadding ="8" cellSpacing ="0" style={{height: "100%"}}>
 
                                         {
-                                            Object.keys(this.props.events).sort().map(function (id, i, props) {
+                                            Object.keys(this.props.events).sort(function(a, b) {
+                                                return a.id - b.id;
+                                            }).map(function (id, i, props) {
                                                 var event = this.props.events[id];
                                                 return (
                                                     <EventRow resetMessageHandler={this.props.resetMessageHandler}

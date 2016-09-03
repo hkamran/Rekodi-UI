@@ -16,7 +16,6 @@ export class EventRow extends React.Component {
             this.setState({
                 className: "example-enter example-enter-active"
             });
-            console.log(this.props.event.viewed);
         } else {
             this.setState({
                 className: ""
