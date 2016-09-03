@@ -133,7 +133,7 @@ export class Subnav extends React.Component {
                                 if (State.cmp(this.props.filter.state, State.PROXY)) {
                                     src = "./assets/images/green_circle_button.png";
                                 } else if (State.cmp(this.props.filter.state, State.MOCK)) {
-                                   src="./assets/images/orange_circle_button.png";
+                                    src="./assets/images/yellow_circle_button.png";
                                 }
 
                                 return (
