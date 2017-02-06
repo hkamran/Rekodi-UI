@@ -1,2 +1,2 @@
-# ServiceRecorderWebGui
-Front end GUI for the service recorder
+# Rekodi UI
+Web interface for the Rekodi application. 
