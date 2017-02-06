@@ -1,7 +1,4 @@
 module.exports = {
-	entry: [ 
-		'whatwg-fetch', './src/App.js'
-	],
 	output: {
 		path:__dirname,
 		filename: 'app.js'

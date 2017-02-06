@@ -9,9 +9,9 @@ var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 
 var src = {
-  images: ['./assets/images/*.png', './assets/images/*.ico'],
-  css:    './assets/css/*.css',
-  libs:	  './libs/**/**'
+  images: ['./src/html/assets/images/*.png', './src/html/assets/images/*.ico'],
+  css:    './src/html/assets/css/*.css',
+  libs:	  './src/html/libs/**/**'
 };
 
 gulp.task('clean', function() {
@@ -37,14 +37,14 @@ gulp.task('css', function() {
 });
 
 gulp.task('app', function() {
-  return gulp.src('./src/App.js')
+  return gulp.src('./src/main/App.js')
     .pipe(webpack( require('./webpack.config.js') ))
 	.pipe(uglify())
     .pipe(gulp.dest('target'));
 });
 
 gulp.task('index', function () {
-  return gulp.src('index.html') 
+  return gulp.src('./src/html/index.html') 
     .pipe(deleteLines({
       'filters': [
       /<link\s+rel=["']/i

@@ -1,8 +1,7 @@
 {
-  "name": "servicerecorderwebgui",
+  "name": "Rekodi-UI",
   "version": "1.0.0",
   "description": "Front end GUI for the service recorder",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --watch-poll",
@@ -22,26 +21,21 @@
     "gulp-inject-string": "^1.1.0",
     "gulp-uglify": "^1.5.4",
     "gulp-webpack": "^1.5.0",
+    "i": "^0.3.5",
+    "react-addons-transition-group": "^15.4.2",
     "run-sequence": "^1.2.2",
     "webpack": "^1.12.*",
     "webpack-dev-server": "^1.14.*"
   },
   "dependencies": {
-    "react-edit-inline": "^1.0.7",
     "jquery": "^3.0.0",
     "react": "^15.0.0",
+    "react-addons-css-transition-group": "^15.4.2",
     "react-dom": "^15.0.0",
+    "react-edit-inline": "^1.0.7",
     "restful.js": "^0.9.6",
     "whatwg-fetch": "^1.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hkamran/ServiceRecorderWebGui.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hkamran/ServiceRecorderWebGui/issues"
-  },
-  "homepage": "https://github.com/hkamran/ServiceRecorderWebGui#readme"
+  "author": "Houman Kamran",
+  "license": "ISC"
 }

@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import {render} from 'react-dom';
-import TransitionGroup from '../../../../../../node_modules/react/lib/ReactCSSTransitionGroup';
+import TransitionGroup from 'react-addons-css-transition-group';
 
 import {Request} from '../../../../../models/Request';
 import {Response} from '../../../../../models/Response';
